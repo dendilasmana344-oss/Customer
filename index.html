@@ -247,6 +247,17 @@ tailwind.config = {
     font-size: 12px;
     border: 2px solid #0a0e1a;
   }
+  
+  @keyframes slideDown {
+    from { opacity: 0; transform: translate(-50%, -20px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
+  
+  .slide-right { animation: slideRight 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+  @keyframes slideRight {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+  }
 
   /* Kategori grid */
   .kategori-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
@@ -355,37 +366,56 @@ tailwind.config = {
   </div>
 </div>
 
-<!-- ═══════════ WA MODAL (WAJIB) ═══════════ -->
-<div id="waModal" class="modal-overlay">
-  <div class="glass slide-up" style="border-radius: 20px; padding: 24px; width: 100%; max-width: 400px;">
-    <div style="text-align: center; margin-bottom: 20px;">
-      <div style="width: 64px; height: 64px; background: rgba(16, 185, 129, 0.15); border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center;">
-        <i class="fab fa-whatsapp" style="color: #34d399; font-size: 30px;"></i>
+<!-- ═══════════ PROFILE REQUIRED MODAL ═══════════ -->
+<div id="profileReqModal" class="modal-overlay">
+  <div class="glass slide-up" style="border-radius: 20px; padding: 24px; width: 100%; max-width: 440px;">
+    <div style="text-align: center; margin-bottom: 18px;">
+      <div style="width: 64px; height: 64px; background: rgba(0, 212, 255, 0.15); border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center;">
+        <i class="fas fa-user-check" style="color: #00d4ff; font-size: 28px;"></i>
       </div>
-      <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 6px;">Nomor WhatsApp Diperlukan</h2>
-      <p style="font-size: 13px; color: #9ca3af; line-height: 1.5;">Kami perlu nomor WhatsApp Anda untuk komunikasi dengan teknisi</p>
+      <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 6px;">Lengkapi Profil Anda</h2>
+      <p style="font-size: 13px; color: #9ca3af; line-height: 1.5;">Sebelum membuat tiket, mohon lengkapi data profil Anda agar teknisi dapat menemukan lokasi Anda.</p>
     </div>
 
-    <form id="waForm">
-      <label style="font-size: 13px; color: #9ca3af; display: block; margin-bottom: 8px;">Nomor WhatsApp <span style="color: #f87171;">*</span></label>
-      <div style="display: flex; align-items: center; background: #0a0e1a; border: 2px solid #1f2937; border-radius: 12px; overflow: hidden; transition: border-color 0.2s;">
-        <span style="padding: 14px 12px; color: #9ca3af; border-right: 1px solid #1f2937; font-size: 14px;">+62</span>
-        <input type="tel" id="waInput" required inputmode="numeric" maxlength="13"
-          style="flex: 1; background: transparent; border: none; padding: 14px 16px; color: #fff; outline: none; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 16px; letter-spacing: 0.05em;"
-          placeholder="8123456789">
-      </div>
-      <p style="font-size: 12px; color: #6b7280; margin-top: 8px;">
-        <i class="fas fa-info-circle" style="margin-right: 4px;"></i>Mulai dengan 8, tanpa 0 atau +62
-      </p>
-      <p id="waError" style="display: none; font-size: 12px; color: #f87171; margin-top: 6px;"></p>
+    <form id="profileReqForm">
+      <label style="font-size: 13px; color: #9ca3af; display: block; margin-bottom: 6px;">Nama Lengkap <span style="color: #f87171;">*</span></label>
+      <input type="text" id="reqNama" required style="width: 100%; background: #0a0e1a; border: 1px solid #1f2937; border-radius: 10px; padding: 12px 14px; color: #e5e7eb; outline: none; margin-bottom: 12px;">
 
-      <button type="submit" id="waSubmitBtn" class="btn-primary" style="width: 100%; padding: 14px; border-radius: 12px; margin-top: 18px;">
+      <label style="font-size: 13px; color: #9ca3af; display: block; margin-bottom: 6px;">Nomor WhatsApp <span style="color: #f87171;">*</span></label>
+      <div style="display: flex; align-items: center; background: #0a0e1a; border: 1px solid #1f2937; border-radius: 10px; overflow: hidden; margin-bottom: 12px;">
+        <span style="padding: 12px; color: #9ca3af; border-right: 1px solid #1f2937;">+62</span>
+        <input type="tel" id="reqWa" required inputmode="numeric" style="flex: 1; background: transparent; border: none; padding: 12px 14px; color: #e5e7eb; outline: none; font-family: ui-monospace, monospace;">
+      </div>
+
+      <label style="font-size: 13px; color: #9ca3af; display: block; margin-bottom: 6px;">Alamat Lengkap <span style="color: #f87171;">*</span></label>
+      <textarea id="reqAlamat" required rows="2" placeholder="Contoh: Jl. Merdeka No. 123, RT 01/RW 02, Kel. Sukamaju" style="width: 100%; background: #0a0e1a; border: 1px solid #1f2937; border-radius: 10px; padding: 12px 14px; color: #e5e7eb; outline: none; margin-bottom: 12px; resize: vertical; font-family: inherit;"></textarea>
+
+      <label style="font-size: 13px; color: #9ca3af; display: block; margin-bottom: 6px;">Paket Internet <span style="color: #f87171;">*</span></label>
+      <select id="reqPaket" required style="width: 100%; background: #0a0e1a; border: 1px solid #1f2937; border-radius: 10px; padding: 12px 14px; color: #e5e7eb; outline: none; margin-bottom: 12px;">
+        <option value="">-- Pilih Paket --</option>
+        <option value="Lakso Lite 10 Mbps">Lakso Lite 7 Mbps</option>
+        <option value="Lakso Home 20 Mbps">Lakso Home 10 Mbps</option>
+        <option value="Lakso Pro 50 Mbps">Lakso Pro 15 Mbps</option>
+        <option value="Lakso Ultra 100 Mbps">Lakso Ultra 25 Mbps</option>
+        <option value="Lakso Gamer 200 Mbps">Lakso Gamer 30 Mbps</option>
+      </select>
+
+      <label style="font-size: 13px; color: #9ca3af; display: block; margin-bottom: 6px;">Lokasi Rumah (GPS) <span style="color: #f87171;">*</span></label>
+      <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+        <input type="text" id="reqKoordinat" required readonly placeholder="Klik tombol lokasi →" style="flex: 1; background: #0a0e1a; border: 1px solid #1f2937; border-radius: 10px; padding: 12px 14px; color: #e5e7eb; outline: none; font-family: ui-monospace, monospace; font-size: 13px;">
+        <button type="button" onclick="reqGetLocation()" style="padding: 0 16px; background: linear-gradient(135deg, #00d4ff, #0091ff); border-radius: 10px; color: #fff; font-weight: 600;">
+          <i class="fas fa-map-marker-alt"></i> Ambil
+        </button>
+      </div>
+      <p id="reqLocStatus" style="font-size: 11px; color: #6b7280; margin-bottom: 16px; min-height: 16px;">
+        <i class="fas fa-info-circle" style="margin-right: 4px;"></i>Izin lokasi diperlukan agar teknisi bisa menemukan rumah Anda
+      </p>
+
+      <div id="reqError" style="display: none; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 10px; padding: 10px; font-size: 12px; color: #f87171; margin-bottom: 12px;"></div>
+
+      <button type="submit" id="reqSubmitBtn" class="btn-primary" style="width: 100%; padding: 14px; border-radius: 12px; font-size: 15px;">
         <i class="fas fa-check-circle" style="margin-right: 8px;"></i>Simpan & Lanjutkan
       </button>
-
-      <p style="font-size: 12px; color: #6b7280; text-align: center; margin-top: 14px;">
-        <i class="fas fa-lock" style="margin-right: 4px;"></i>Data Anda terenkripsi & tidak dibagikan
-      </p>
     </form>
   </div>
 </div>
@@ -743,17 +773,31 @@ tailwind.config = {
   </nav>
 </div>
 
-<!-- ═══════════ NOTIF PANEL ═══════════ -->
-<div id="notifPanel" class="modal-overlay" onclick="toggleNotif()" style="padding: 0;">
-  <div class="glass slide-up" onclick="event.stopPropagation()" style="position: absolute; right: 0; top: 0; bottom: 0; width: 100%; max-width: 380px; padding: 16px; overflow-y: auto;">
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-      <h3 style="font-size: 17px; font-weight: 700;"><i class="fas fa-bell" style="color: #00d4ff; margin-right: 8px;"></i>Notifikasi</h3>
-      <div style="display: flex; gap: 12px;">
-        <button onclick="clearAllNotif()" style="font-size: 12px; color: #9ca3af;">Hapus semua</button>
-        <button onclick="toggleNotif()" style="color: #9ca3af;"><i class="fas fa-times"></i></button>
+<!-- ═══════════ NOTIF PANEL (SIDEBAR) ═══════════ -->
+<div id="notifPanel" class="modal-overlay" onclick="toggleNotif()" style="padding: 0; background: rgba(0,0,0,0.6);">
+  <div class="glass slide-right" onclick="event.stopPropagation()" style="position: absolute; right: 0; top: 0; bottom: 0; width: 100%; max-width: 400px; padding: 0; overflow: hidden; display: flex; flex-direction: column; box-shadow: -10px 0 40px rgba(0,0,0,0.6);">
+    <!-- Header -->
+    <div style="padding: 18px 16px; border-bottom: 1px solid #1f2937; display: flex; align-items: center; justify-content: space-between; background: rgba(0, 212, 255, 0.05);">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #00d4ff, #7c3aed); display: flex; align-items: center; justify-content: center;">
+          <i class="fas fa-bell" style="color: #fff;"></i>
+        </div>
+        <div>
+          <h3 style="font-size: 16px; font-weight: 700;">Notifikasi</h3>
+          <p id="notifCountLabel" style="font-size: 11px; color: #6b7280;">0 belum dibaca</p>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button onclick="clearAllNotif()" title="Hapus semua" style="padding: 8px; color: #9ca3af; border-radius: 8px; background: rgba(17,24,39,0.6); border: 1px solid #1f2937;">
+          <i class="fas fa-check-double"></i>
+        </button>
+        <button onclick="toggleNotif()" style="padding: 8px; color: #9ca3af; border-radius: 8px; background: rgba(17,24,39,0.6); border: 1px solid #1f2937;">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
     </div>
-    <div id="notifList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+    <!-- Body -->
+    <div id="notifList" style="flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px;"></div>
   </div>
 </div>
 
@@ -1176,13 +1220,20 @@ async function afterLoginSuccess(uid, userData, isAutoLogin) {
   showMainApp();
   updateUserUI(userData);
 
-  // Cek WA
-  if (!userData.noWa) {
-    document.getElementById('waModal').classList.add('show');
-  } else {
-    listenUser();
-    listenTickets();
+  // Cek profil lengkap
+  const isComplete = userData.nama && userData.nama.length >= 3 && userData.noWa && /^\+62\d{8,12}$/.test(userData.noWa) && userData.alamat && userData.alamat.length >= 5 && userData.paket && userData.koordinat && userData.koordinat.includes(',');
+  if (!isComplete) {
+    // Isi form profil
+    document.getElementById('reqNama').value = userData.nama || '';
+    document.getElementById('reqWa').value = (userData.noWaRaw || '').replace(/\D/g, '');
+    document.getElementById('reqAlamat').value = userData.alamat || '';
+    document.getElementById('reqPaket').value = userData.paket || '';
+    document.getElementById('reqKoordinat').value = userData.koordinat || '';
+    document.getElementById('profileReqModal').classList.add('show');
   }
+  // Selalu listen
+  listenUser();
+  listenTickets();
 
   document.getElementById('ticketTime').textContent = new Date().toLocaleString('id-ID');
   document.getElementById('sidebarUid').textContent = uid;
@@ -1198,50 +1249,6 @@ function updateUserUI(userData) {
   document.getElementById('dashPaket').textContent = userData.paket || 'Paket belum diset';
   document.getElementById('profUid').value = userData.uid;
 }
-
-/* ═══════════════════════════════════════════════════
-   WA MODAL
-═══════════════════════════════════════════════════ */
-document.getElementById('waInput').addEventListener('input', e => {
-  e.target.value = e.target.value.replace(/\D/g, '');
-});
-
-document.getElementById('waForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const wa = document.getElementById('waInput').value.trim();
-  const errEl = document.getElementById('waError');
-  const btn = document.getElementById('waSubmitBtn');
-
-  if (!/^8\d{8,12}$/.test(wa)) {
-    errEl.textContent = 'Format: mulai dengan 8, panjang 9-13 angka. Contoh: 81234567890';
-    errEl.style.display = 'block';
-    return;
-  }
-  errEl.style.display = 'none';
-
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spin"></span> Menyimpan...';
-
-  try {
-    const fullWa = '+62' + wa;
-    await db.ref('users/' + currentUid + '/noWa').set(fullWa);
-    await db.ref('users/' + currentUid + '/noWaRaw').set(wa);
-    await db.ref('users/' + currentUid + '/updatedAt').set(Date.now());
-
-    currentUserData.noWa = fullWa;
-    toast('Nomor WhatsApp tersimpan!', 'success');
-    document.getElementById('waModal').classList.remove('show');
-
-    listenUser();
-    listenTickets();
-  } catch (err) {
-    errEl.textContent = 'Gagal: ' + err.message;
-    errEl.style.display = 'block';
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fas fa-check-circle" style="margin-right: 8px;"></i>Simpan & Lanjutkan';
-  }
-});
 
 /* ═══════════════════════════════════════════════════
    LISTEN USER
@@ -1361,7 +1368,21 @@ function renderTickets(tickets) {
 /* ═══════════════════════════════════════════════════
    BUAT TIKET
 ═══════════════════════════════════════════════════ */
-function openNewTicket() {
+async function openNewTicket() {
+  // Cek profil lengkap dulu
+  const u = currentUserData;
+  const isComplete = u && u.nama && u.nama.length >= 3 && u.noWa && /^\+62\d{8,12}$/.test(u.noWa) && u.alamat && u.alamat.length >= 5 && u.paket && u.koordinat && u.koordinat.includes(',');
+  if (!isComplete) {
+    // Isi form dengan data yang ada
+    document.getElementById('reqNama').value = u?.nama || '';
+    document.getElementById('reqWa').value = (u?.noWaRaw || '').replace(/\D/g, '');
+    document.getElementById('reqAlamat').value = u?.alamat || '';
+    document.getElementById('reqPaket').value = u?.paket || '';
+    document.getElementById('reqKoordinat').value = u?.koordinat || '';
+    document.getElementById('profileReqModal').classList.add('show');
+    return;
+  }
+  // Cek tiket aktif
   const active = allTickets.filter(t => t.status !== 'Selesai');
   if (active.length > 0) {
     document.getElementById('dupModal').classList.add('show');
@@ -1369,6 +1390,86 @@ function openNewTicket() {
   }
   proceedNewTicket();
 }
+
+// Handler geolocation di modal profil
+function reqGetLocation() {
+  const status = document.getElementById('reqLocStatus');
+  const input = document.getElementById('reqKoordinat');
+  if (!navigator.geolocation) {
+    status.innerHTML = '<i class="fas fa-exclamation-circle" style="color: #f87171; margin-right: 4px;"></i>Browser tidak mendukung GPS';
+    return;
+  }
+  status.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 4px;"></i>Meminta izin lokasi...';
+  navigator.geolocation.getCurrentPosition(
+    p => {
+      const coord = p.coords.latitude.toFixed(6) + ', ' + p.coords.longitude.toFixed(6);
+      input.value = coord;
+      status.innerHTML = '<i class="fas fa-check-circle" style="color: #34d399; margin-right: 4px;"></i>Lokasi berhasil diambil: ' + coord;
+    },
+    err => {
+      let msg = 'Gagal ambil lokasi';
+      if (err.code === 1) msg = 'Izin lokasi DITOLAK. Buka pengaturan browser → izinkan lokasi untuk situs ini';
+      if (err.code === 2) msg = 'Lokasi tidak tersedia (GPS mati?)';
+      if (err.code === 3) msg = 'Timeout — coba lagi';
+      status.innerHTML = '<i class="fas fa-exclamation-circle" style="color: #f87171; margin-right: 4px;"></i>' + msg;
+    },
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+  );
+}
+
+// Submit profil dari modal
+document.getElementById('profileReqForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const nama = document.getElementById('reqNama').value.trim();
+  const wa = document.getElementById('reqWa').value.trim();
+  const alamat = document.getElementById('reqAlamat').value.trim();
+  const paket = document.getElementById('reqPaket').value;
+  const koordinat = document.getElementById('reqKoordinat').value.trim();
+  const errEl = document.getElementById('reqError');
+
+  if (!nama || nama.length < 3) { errEl.textContent = 'Nama minimal 3 karakter'; errEl.style.display = 'block'; return; }
+  if (!/^8\d{8,12}$/.test(wa)) { errEl.textContent = 'No WA: mulai dengan 8, 9-13 digit'; errEl.style.display = 'block'; return; }
+  if (!alamat || alamat.length < 5) { errEl.textContent = 'Alamat minimal 5 karakter'; errEl.style.display = 'block'; return; }
+  if (!paket) { errEl.textContent = 'Pilih paket internet'; errEl.style.display = 'block'; return; }
+  if (!koordinat || !koordinat.includes(',')) { errEl.textContent = 'Ambil lokasi GPS dulu (klik tombol Ambil)'; errEl.style.display = 'block'; return; }
+
+  errEl.style.display = 'none';
+  const btn = document.getElementById('reqSubmitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Menyimpan...';
+
+  try {
+    await db.ref('users/' + currentUid).update({
+      nama,
+      noWa: '+62' + wa,
+      noWaRaw: wa,
+      alamat,
+      paket,
+      koordinat,
+      profileCompleted: true,
+      updatedAt: Date.now()
+    });
+    currentUserData.nama = nama;
+    currentUserData.noWa = '+62' + wa;
+    currentUserData.noWaRaw = wa;
+    currentUserData.alamat = alamat;
+    currentUserData.paket = paket;
+    currentUserData.koordinat = koordinat;
+    currentUserData.profileCompleted = true;
+
+    document.getElementById('profileReqModal').classList.remove('show');
+    updateUserUI(currentUserData);
+    toast('Profil berhasil dilengkapi!', 'success');
+    // Lanjut buat tiket
+    setTimeout(() => openNewTicket(), 500);
+  } catch (err) {
+    errEl.textContent = 'Gagal: ' + err.message;
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-check-circle" style="margin-right: 8px;"></i>Simpan & Lanjutkan';
+  }
+});
 function closeDupModal() { document.getElementById('dupModal').classList.remove('show'); }
 function confirmNewTicket() { closeDupModal(); proceedNewTicket(); }
 function proceedNewTicket() {
@@ -1539,6 +1640,8 @@ document.getElementById('ticketForm').addEventListener('submit', async (e) => {
       message: autoReply,
       timestamp: Date.now()
     });
+    
+    playNotifSound();
 
     showSuccessModal('Tiket Berhasil Dikirim!', 'Nomor tiket: #' + ticketRef.key.substring(1, 8).toUpperCase() + '\n\nTeknisi akan segera menghubungi Anda.');
     toast('Tiket berhasil dikirim!', 'success');
@@ -1813,16 +1916,79 @@ async function submitRating() {
 /* ═══════════════════════════════════════════════════
    CHAT
 ═══════════════════════════════════════════════════ */
+// Ringtone generator (tanpa file eksternal)
+let audioCtx = null;
+function playNotifSound() {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const now = audioCtx.currentTime;
+    // Dua nada: B5 lalu E6
+    [659.25, 1318.51].forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, now + i * 0.15);
+      gain.gain.linearRampToValueAtTime(0.3, now + i * 0.15 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.15 + 0.35);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now + i * 0.15);
+      osc.stop(now + i * 0.15 + 0.4);
+    });
+  } catch (e) { console.log('Audio error:', e); }
+}
+
+// Alert masuk pesan baru
+function showChatAlert(senderName, senderRole, message) {
+  // Bikin elemen toast khusus chat
+  const alert = document.createElement('div');
+  alert.style.cssText = 'position: fixed; top: 70px; left: 50%; transform: translateX(-50%); z-index: 95; background: rgba(17, 24, 39, 0.98); backdrop-filter: blur(12px); border: 1px solid #00d4ff; border-left: 4px solid #00d4ff; padding: 12px 18px; border-radius: 12px; max-width: 92vw; min-width: 280px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); cursor: pointer; animation: slideDown 0.3s;';
+  alert.innerHTML =
+    '<div style="display: flex; align-items: center; gap: 10px;">' +
+    '<div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #00d4ff, #7c3aed); display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0;">' +
+    '<i class="fas fa-comment-dots"></i></div>' +
+    '<div style="flex: 1; min-width: 0;">' +
+    '<p style="font-size: 13px; font-weight: 700; color: #00d4ff;">Pesan baru dari ' + escapeHtml(senderName) + ' <span style="font-size: 10px; color: #9ca3af; font-weight: 500;">(' + escapeHtml(senderRole) + ')</span></p>' +
+    '<p style="font-size: 12px; color: #d1d5db; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">' + escapeHtml(message) + '</p>' +
+    '</div>' +
+    '<i class="fas fa-chevron-right" style="color: #6b7280;"></i>' +
+    '</div>';
+  alert.onclick = () => {
+    alert.remove();
+    if (lastTicketId) showView('Chat', lastTicketId);
+  };
+  document.body.appendChild(alert);
+  setTimeout(() => { if (alert.parentNode) alert.remove(); }, 5000);
+}
+
 function setupChatListeners(tickets) {
   if (chatListenerOff) chatListenerOff();
   const offs = [];
   tickets.forEach(t => {
     const ref = db.ref('chats/' + t.id);
+    let firstLoad = true;
     const handler = ref.on('value', snap => {
       const msgs = [];
       snap.forEach(c => msgs.push(c.val()));
       const last = msgs[msgs.length - 1];
       const isChatOpen = lastTicketId === t.id && document.getElementById('viewChat').classList.contains('active');
+
+      // Deteksi pesan baru (bukan dari diri sendiri, bukan system)
+      if (!firstLoad && last && last.senderId !== currentUid && last.senderId !== 'SYSTEM') {
+        const lastKey = 'lastmsg_' + t.id;
+        const prevTs = parseInt(localStorage.getItem(lastKey) || '0');
+        if (last.timestamp > prevTs) {
+          localStorage.setItem(lastKey, String(last.timestamp));
+          // Hanya bunyi + alert kalau chat TIDAK sedang dibuka
+          if (!isChatOpen) {
+            playNotifSound();
+            const roleLabel = last.senderRole === 'admin' ? 'Admin' : last.senderRole === 'teknisi' ? 'Teknisi' : 'Customer';
+            showChatAlert(last.senderName || roleLabel, roleLabel, last.message);
+          }
+        }
+      }
+
       if (last && last.senderRole !== 'customer' && last.senderId !== currentUid && last.senderId !== 'SYSTEM') {
         const readKey = 'read_' + t.id + '_' + last.timestamp;
         if (!localStorage.getItem(readKey) && !isChatOpen) {
@@ -1833,6 +1999,7 @@ function setupChatListeners(tickets) {
         renderChatMessages(msgs);
         if (last) localStorage.setItem('read_' + t.id + '_' + last.timestamp, '1');
       }
+      firstLoad = false;
     });
     offs.push(() => ref.off('value', handler));
   });
@@ -1886,9 +2053,35 @@ function renderChatMessages(msgs) {
         '<i class="fas fa-info-circle" style="margin-right: 4px;"></i>' + escapeHtml(m.message) +
         '</div></div>';
     }
-    return '<div style="display: flex; ' + (mine ? 'justify-content: flex-end;' : 'justify-content: flex-start;') + '">' +
+    // Tentukan label role + nama
+    let roleLabel = '';
+    let roleColor = '#9ca3af';
+    let roleIcon = 'fa-user';
+    if (m.senderRole === 'admin') {
+      roleLabel = 'Admin';
+      roleColor = '#c084fc';
+      roleIcon = 'fa-shield-halved';
+    } else if (m.senderRole === 'teknisi') {
+      roleLabel = 'Teknisi';
+      roleColor = '#34d399';
+      roleIcon = 'fa-tools';
+    } else if (m.senderRole === 'customer') {
+      roleLabel = 'Customer';
+      roleColor = '#00d4ff';
+      roleIcon = 'fa-user';
+    }
+    const displayName = m.senderName || roleLabel;
+
+    return '<div style="display: flex; flex-direction: column; ' + (mine ? 'align-items: flex-end;' : 'align-items: flex-start;') + '">' +
+      // Header nama + role
+      '<div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px; padding: 0 4px;">' +
+      '<div style="width: 22px; height: 22px; border-radius: 50%; background: ' + roleColor + '22; border: 1px solid ' + roleColor + '66; display: flex; align-items: center; justify-content: center;">' +
+      '<i class="fas ' + roleIcon + '" style="font-size: 10px; color: ' + roleColor + ';"></i></div>' +
+      '<span style="font-size: 11px; font-weight: 700; color: ' + roleColor + ';">' + escapeHtml(displayName) + '</span>' +
+      '<span style="font-size: 10px; color: #6b7280; padding: 1px 6px; background: rgba(17,24,39,0.6); border-radius: 4px;">' + roleLabel + '</span>' +
+      '</div>' +
+      // Bubble
       '<div class="chat-bubble" style="max-width: 78%; ' + (mine ? 'background: linear-gradient(135deg, #00d4ff, #0091ff); color: #fff;' : 'background: rgba(17, 24, 39, 0.7); border: 1px solid #1f2937;') + ' border-radius: 16px; padding: 10px 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">' +
-      (!mine ? '<p style="font-size: 11px; font-weight: 600; margin-bottom: 4px; opacity: 0.85;">' + escapeHtml(m.senderName) + ' · <span style="text-transform: capitalize;">' + m.senderRole + '</span></p>' : '') +
       '<p style="font-size: 13px; white-space: pre-wrap; line-height: 1.5;">' + escapeHtml(m.message) + '</p>' +
       '<p style="font-size: 10px; opacity: 0.65; margin-top: 4px; text-align: right;">' + fmtTime(m.timestamp) + '</p>' +
       '</div></div>';
@@ -1956,10 +2149,30 @@ function checkChatCooldown() {
 
 document.getElementById('chatInput').addEventListener('keypress', e => { if (e.key === 'Enter') sendChat(); });
 
-function openLastChat() {
-  if (lastTicketId) showView('Chat', lastTicketId);
-  else if (allTickets.length) { lastTicketId = allTickets[0].id; showView('Chat', lastTicketId); }
-  else toast('Belum ada tiket untuk dichat', 'warn');
+function showView(name, ticketId) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  const view = document.getElementById('view' + name);
+  if (view) view.classList.add('active');
+
+  document.querySelectorAll('[data-nav]').forEach(b => {
+    if (b.dataset.nav === name) b.classList.add('active');
+    else b.classList.remove('active');
+  });
+
+  document.querySelectorAll('[data-sidebar]').forEach(b => {
+    if (b.dataset.sidebar === name) b.classList.add('active');
+    else b.classList.remove('active');
+  });
+
+  const titles = { Dashboard: 'Customer Portal', NewTicket: 'Buat Tiket', Chat: 'Live Chat', Profile: 'Profil Saya', TicketDetail: 'Detail Tiket' };
+  const sub = document.getElementById('headerSubtitle');
+  if (sub) sub.textContent = titles[name] || 'Customer Portal';
+
+  if (name === 'TicketDetail' && ticketId) loadTicketDetail(ticketId);
+  if (name === 'Chat' && ticketId) { lastTicketId = ticketId; loadChat(ticketId); }
+  if (name === 'Profile') loadProfileForm();
+
+  window.scrollTo(0, 0);
 }
 
 /* ═══════════════════════════════════════════════════
@@ -2039,13 +2252,16 @@ function renderNotif() {
         title: t.kategori,
         body: 'Status: ' + t.status + (t.teknisiName ? ' • Teknisi: ' + t.teknisiName : '') + (t.eta ? ' • ETA: ' + t.eta : ''),
         time: t.updatedAt,
-        isRead: !!localStorage.getItem(key)
+        isRead: !!localStorage.getItem(key),
+        icon: t.status === 'Selesai' ? 'fa-check-circle' : t.status === 'Teknisi OTW' ? 'fa-truck' : 'fa-info-circle',
+        color: t.status === 'Selesai' ? '#34d399' : t.status === 'Teknisi OTW' ? '#facc15' : '#00d4ff'
       });
     }
   });
   notifs.sort((a, b) => b.time - a.time);
   const unread = notifs.filter(n => !n.isRead).length;
   const badge = document.getElementById('notifBadge');
+  const countLabel = document.getElementById('notifCountLabel');
   if (unread > 0) {
     badge.textContent = unread > 9 ? '9+' : unread;
     badge.style.display = 'flex';
@@ -2054,14 +2270,20 @@ function renderNotif() {
   } else {
     badge.style.display = 'none';
   }
+  if (countLabel) countLabel.textContent = unread + ' belum dibaca';
 
   document.getElementById('notifList').innerHTML = notifs.length ? notifs.map(n =>
-    '<div class="glass" onclick="markNotifRead(\'' + n.id + '\',\'' + n.time + '\'); openTicketDetail(\'' + n.id + '\')" style="border-radius: 10px; padding: 12px; cursor: pointer; ' + (n.isRead ? 'opacity: 0.6;' : '') + '">' +
-    '<p style="font-weight: 600; font-size: 13px;">' + escapeHtml(n.title) + '</p>' +
-    '<p style="font-size: 11px; color: #9ca3af; margin-top: 4px;">' + escapeHtml(n.body) + '</p>' +
-    '<p style="font-size: 11px; color: #6b7280; margin-top: 4px;">' + timeAgo(n.time) + '</p>' +
+    '<div class="glass fade-in" onclick="markNotifRead(\'' + n.id + '\'); toggleNotif(); openTicketDetail(\'' + n.id + '\')" style="border-radius: 12px; padding: 12px; cursor: pointer; border-left: 4px solid ' + n.color + ';' + (n.isRead ? 'opacity: 0.55;' : '') + ' display: flex; gap: 10px;">' +
+    '<div style="width: 32px; height: 32px; border-radius: 8px; background: ' + n.color + '22; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">' +
+    '<i class="fas ' + n.icon + '" style="color: ' + n.color + '; font-size: 14px;"></i></div>' +
+    '<div style="flex: 1; min-width: 0;">' +
+    '<p style="font-weight: 600; font-size: 13px;" class="line-clamp-1">' + escapeHtml(n.title) + '</p>' +
+    '<p style="font-size: 11px; color: #9ca3af; margin-top: 3px;" class="line-clamp-2">' + escapeHtml(n.body) + '</p>' +
+    '<p style="font-size: 10px; color: #6b7280; margin-top: 4px;">' + timeAgo(n.time) + '</p>' +
+    '</div>' +
+    (n.isRead ? '' : '<div style="width: 8px; height: 8px; border-radius: 50%; background: #00d4ff; flex-shrink: 0; align-self: center;"></div>') +
     '</div>'
-  ).join('') : '<p style="text-align: center; color: #6b7280; padding: 32px 0;">Tidak ada notifikasi</p>';
+  ).join('') : '<div style="text-align: center; padding: 60px 20px;"><i class="fas fa-bell-slash" style="font-size: 40px; color: #374151;"></i><p style="color: #6b7280; margin-top: 12px; font-size: 13px;">Tidak ada notifikasi</p></div>';
 }
 
 function markNotifRead(ticketId) {

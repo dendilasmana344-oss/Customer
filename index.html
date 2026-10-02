@@ -96,6 +96,30 @@
   .kategori-card:hover { border-color: #374151; }
   .kategori-card.selected { border-color: #00d4ff; background: rgba(0, 212, 255, 0.12); }
 
+  /* NEON SEEKBAR */
+  .neon-seekbar { position: relative; height: 10px; background: rgba(10, 14, 26, 0.8); border-radius: 999px; overflow: hidden; border: 1px solid rgba(0, 212, 255, 0.25); box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.5); }
+  .neon-seekbar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #00d4ff 0%, #7c3aed 50%, #00ff88 100%); border-radius: 999px; box-shadow: 0 0 8px #00d4ff, 0 0 16px rgba(124, 58, 237, 0.6), 0 0 24px rgba(0, 255, 136, 0.4); transition: width 1s linear; position: relative; overflow: hidden; }
+  .neon-seekbar-fill::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%); animation: neonSweep 2.5s ease-in-out infinite; }
+  @keyframes neonSweep { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+  .neon-seekbar-danger .neon-seekbar-fill { background: linear-gradient(90deg, #ef4444 0%, #f59e0b 50%, #facc15 100%); box-shadow: 0 0 8px #ef4444, 0 0 16px rgba(245, 158, 11, 0.6); }
+  .neon-seekbar-success .neon-seekbar-fill { background: linear-gradient(90deg, #10b981 0%, #34d399 50%, #00ff88 100%); box-shadow: 0 0 8px #10b981, 0 0 16px rgba(52, 211, 153, 0.6); }
+  .neon-seekbar-label { display: flex; justify-content: space-between; font-size: 10px; color: #9ca3af; margin-top: 5px; font-family: ui-monospace, monospace; font-weight: 600; }
+  .neon-seekbar-label .seek-left { color: #00d4ff; }
+  .neon-seekbar-label .seek-right { color: #7c3aed; }
+  .neon-seekbar-label .seek-pct { color: #00ff88; font-weight: 700; }
+
+  /* MAINTENANCE POPUP */
+  .maint-popup { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 300; display: none; align-items: center; justify-content: center; padding: 16px; }
+  .maint-popup.show { display: flex; }
+  .maint-popup .maint-box { background: rgba(17, 24, 39, 0.98); border-radius: 20px; padding: 24px; width: 100%; max-width: 440px; border: 2px solid; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7); animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+  .maint-popup .maint-icon { width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 32px; color: #fff; }
+  .maint-popup .maint-title { font-size: 20px; font-weight: 800; text-align: center; margin-bottom: 8px; }
+  .maint-popup .maint-desc { font-size: 13px; color: #d1d5db; text-align: center; line-height: 1.6; white-space: pre-wrap; margin-bottom: 20px; }
+  .maint-popup .maint-timer { background: rgba(0, 0, 0, 0.4); border-radius: 12px; padding: 14px; margin-bottom: 16px; }
+  .maint-popup .maint-timer-top { display: flex; justify-content: space-between; font-size: 11px; color: #9ca3af; margin-bottom: 10px; }
+  .maint-popup .maint-info { text-align: center; font-size: 11px; color: #6b7280; line-height: 1.5; }
+  .maint-popup .maint-info i { color: #f59e0b; }
+
   /* CHAT */
   .chat-history-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px; border-radius: 14px; cursor: pointer; transition: all 0.2s; background: rgba(17, 24, 39, 0.6); border-left: 4px solid #00d4ff; }
   .chat-history-item:hover { transform: translateX(4px); background: rgba(0, 212, 255, 0.08); }
@@ -141,7 +165,6 @@
   .notif-tab i { font-size: 10px; }
 
   /* COMPACT */
-  #viewDashboard > div:first-child { gap: 6px !important; margin-bottom: 10px !important; }
   main { padding: 12px 10px 20px !important; }
   header > div { padding: 8px 12px !important; }
   header h1 { font-size: 13px !important; }
@@ -501,7 +524,7 @@
       <button onclick="openNewTicket()" class="bottom-nav-item" data-nav="NewTicket" style="padding: 10px; display: flex; flex-direction: column; align-items: center; gap: 2px; color: #9ca3af;">
         <i class="fas fa-plus-circle" style="font-size: 16px;"></i><span style="font-size: 10px;">Buat</span>
       </button>
-       <button onclick="openChatView()" class="bottom-nav-item" data-nav="Chat" style="position: relative; padding: 10px; display: flex; flex-direction: column; align-items: center; gap: 2px; color: #9ca3af;">
+      <button onclick="openChatView()" class="bottom-nav-item" data-nav="Chat" style="position: relative; padding: 10px; display: flex; flex-direction: column; align-items: center; gap: 2px; color: #9ca3af;">
         <i class="fas fa-comments" style="font-size: 16px;"></i><span style="font-size: 10px;">Chat</span>
         <span id="chatBadge" style="display: none; position: absolute; top: 4px; right: 25%; min-width: 18px; height: 18px; background: #ef4444; color: #fff; border-radius: 999px; font-size: 10px; font-weight: 700; align-items: center; justify-content: center; padding: 0 4px;">0</span>
       </button>
@@ -550,7 +573,6 @@
         <i class="fas fa-times"></i>
       </button>
     </div>
-    <!-- NOTIF FILTER TABS -->
     <div class="notif-tabs" id="notifTabs">
       <button class="notif-tab active" data-nfilter="all" onclick="setNotifFilter('all')"><i class="fas fa-list"></i> Semua</button>
       <button class="notif-tab" data-nfilter="info" onclick="setNotifFilter('info')"><i class="fas fa-bell"></i> Pemberitahuan</button>
@@ -626,6 +648,35 @@
   </div>
 </div>
 
+<!-- MAINTENANCE POPUP -->
+<div id="maintenancePopup" class="maint-popup">
+  <div class="maint-box" id="maintBox" style="border-color: #f59e0b;">
+    <div class="maint-icon" id="maintIcon" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff;">
+      <i class="fas fa-tools"></i>
+    </div>
+    <h2 class="maint-title" id="maintTitleText" style="color: #f59e0b;">Maintenance</h2>
+    <p class="maint-desc" id="maintDescText">Deskripsi maintenance</p>
+    <div class="maint-timer">
+      <div class="maint-timer-top">
+        <span><i class="fas fa-play"></i> <span id="maintTimeStart">-</span></span>
+        <span><span id="maintTimeEnd">-</span> <i class="fas fa-flag-checkered"></i></span>
+      </div>
+      <div class="neon-seekbar">
+        <div id="maintSeekFill" class="neon-seekbar-fill" style="width: 0%;"></div>
+      </div>
+      <div class="neon-seekbar-label">
+        <span class="seek-left">0%</span>
+        <span class="seek-pct" id="maintPctText">0%</span>
+        <span class="seek-right">100%</span>
+      </div>
+    </div>
+    <div class="maint-info">
+      <i class="fas fa-lock"></i> Popup ini tidak dapat ditutup.<br>
+      Akan hilang otomatis saat maintenance selesai.
+    </div>
+  </div>
+</div>
+
 <!-- SUCCESS MODAL -->
 <div id="successModal" class="modal-overlay">
   <div class="glass slide-up" style="border-radius: 20px; padding: 24px; width: 100%; max-width: 380px; text-align: center;">
@@ -661,13 +712,18 @@ var globalChatRef = null;
 var chatLastMessages = {};
 var unreadChatByTicket = {};
 var activeChatTicketId = null;
+var currentChatRoom = null;
+var currentChatType = 'support';
 var chatCooldownTimer = null;
 var listenersStarted = false;
 var notifFilter = 'all';
 var progressTicker = null;
+var maintData = null;
+var maintTicker = null;
 var IMGBB_KEY = 'cdb1c90e037e9a74be4bb8d30de5d50f';
 var MAX_ACTIVE_TICKETS = 5;
 
+/* ═══════ HELPERS ═══════ */
 function log(msg, data) { console.log('%c[Lakso Customer]', 'color:#00d4ff;font-weight:bold;', msg, data || ''); }
 function logErr(msg, err) { console.error('%c[Lakso Customer ERROR]', 'color:#ef4444;font-weight:bold;', msg, err || ''); }
 function $(id) { return document.getElementById(id); }
@@ -724,7 +780,7 @@ function formatCountdown(ms) {
   return sec + ' detik';
 }
 
-/* ═══════ FIREBASE ═══════ */
+/* ═══════ FIREBASE INIT ═══════ */
 function initFirebase() {
   try {
     var cfg = {
@@ -883,6 +939,7 @@ async function afterLoginSuccess(uid, userData, isAutoLogin) {
     listenUser();
     listenTickets();
     startGlobalChatIndex();
+    startMaintenancePopupListener();
     listenersStarted = true;
   }
   var sUid = $('sidebarUid'); if (sUid) sUid.textContent = uid;
@@ -924,10 +981,10 @@ function listenTickets() {
     updateStats(tickets);
     renderActiveBanner(tickets);
     renderNotif();
-    renderChatList();
     updateNewTicketButton();
     var vd = $('viewTicketDetail');
     if (selectedTicketId && vd && vd.classList.contains('active')) loadTicketDetail(selectedTicketId);
+    refreshChatRoomList();
   });
 }
 
@@ -960,9 +1017,7 @@ function startGlobalChatIndex() {
       chatLastMessages = next;
       updateChatBadges();
       refreshChatRoomList();
-      renderChatList();
-      var hm = $('chatHistoryModal');
-      if (hm && hm.classList.contains('show')) renderChatHistory();
+      renderChatHistory();
     } catch (err) { logErr('Chat index error', err); }
   });
 }
@@ -1070,15 +1125,12 @@ function renderTickets(tickets) {
 
 /* ═══════ NEW TICKET ═══════ */
 function openNewTicket() {
-  // Cek limit tiket aktif
   var active = allTickets.filter(function(t) { return t.status !== 'Selesai'; });
   if (active.length >= MAX_ACTIVE_TICKETS) {
     toast('Max 5 tiket aktif', 'warn');
     showSuccessModal('Batas Tiket Tercapai', 'Anda sudah memiliki ' + active.length + ' tiket aktif.\nTunggu sampai ada yang selesai.');
     return;
   }
-
-  // Cek profil lengkap
   var u = currentUserData;
   var isComplete = u && u.nama && u.nama.length >= 3 && u.noWa && /^\+62\d{8,12}$/.test(u.noWa) && u.alamat && u.alamat.length >= 5 && u.paket && u.koordinat && u.koordinat.indexOf(',') >= 0;
   if (!isComplete) {
@@ -1090,18 +1142,33 @@ function openNewTicket() {
     var m = $('profileReqModal'); if (m) m.classList.add('show');
     return;
   }
-
-  // ✅ Reset form dulu
   resetTicketForm();
-
-  // Pindah ke view
   showView('NewTicket');
-
-  // Fokus ke kategori (opsional)
   setTimeout(function() {
     var grid = $('kategoriGrid');
     if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, 200);
+}
+
+function resetTicketForm() {
+  uploadedPhotos = [];
+  selectedKategori = '';
+  isSubmittingTicket = false;
+  var gi = $('kategoriGrid');
+  if (gi) {
+    Array.from(gi.querySelectorAll('.kategori-card')).forEach(function(c) { c.classList.remove('selected'); });
+  }
+  var td = $('ticketDesc'); if (td) td.value = '';
+  var dc = $('descCount'); if (dc) dc.textContent = '0';
+  var pp = $('photoPreview'); if (pp) pp.innerHTML = '';
+  var pi = $('photoInput'); if (pi) pi.value = '';
+  var tp = $('ticketPriority'); if (tp) tp.value = 'Medium';
+  var btn = $('submitTicket');
+  if (btn) {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane" style="margin-right: 8px;"></i>Kirim Tiket';
+    btn.style.opacity = '1';
+  }
 }
 
 function reqGetLocation() {
@@ -1321,40 +1388,14 @@ async function submitTicket() {
     showSuccessModal('Tiket Dikirim!', 'Nomor: #' + safeSub(ref.key, 1, 8).toUpperCase() + '\n\nTeknisi akan segera menghubungi.');
     toast('Tiket berhasil dikirim!', 'success');
     lastTicketId = ref.key;
-    // Reset form & pindah ke dashboard
     resetTicketForm();
     showView('Dashboard');
   } catch (err) {
     logErr('submitTicket error', err);
     toast('Gagal: ' + err.message, 'error');
-    } finally {
+  } finally {
     isSubmittingTicket = false;
     resetTicketForm();
-  }
-}
-
-/* ═══════ RESET TICKET FORM ═══════ */
-function resetTicketForm() {
-  // Clear variables
-  uploadedPhotos = [];
-  selectedKategori = '';
-  isSubmittingTicket = false;
-
-    // Clear DOM
-    var gi = $('kategoriGrid');
-    if (gi) {
-    Array.from(gi.querySelectorAll('.kategori-card')).forEach(function(c) { c.classList.remove('selected'); });
-  }
-  var td = $('ticketDesc'); if (td) td.value = '';
-  var dc = $('descCount'); if (dc) dc.textContent = '0';
-  var pp = $('photoPreview'); if (pp) pp.innerHTML = '';
-  var pi = $('photoInput'); if (pi) pi.value = '';
-  var tp = $('ticketPriority'); if (tp) tp.value = 'Medium';
-  var btn = $('submitTicket');
-  if (btn) {
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fas fa-paper-plane" style="margin-right: 8px;"></i>Kirim Tiket';
-    btn.style.opacity = '1';
   }
 }
 
@@ -1453,14 +1494,12 @@ function loadTicketDetail(id) {
   if (t.status === 'Selesai' && !t.rating) html += '<button onclick="openRating(\'' + t.id + '\')" class="btn-primary" style="flex:1;min-width:100px;padding:10px;border-radius:10px;font-size:12px;"><i class="fas fa-star" style="margin-right:4px;"></i>Beri Rating</button>';
   html += '</div></div>';
 
-  // Progress History (READ-ONLY untuk customer)
   html += '<div class="glass" style="border-radius:16px;padding:16px;margin-bottom:12px;">';
   html += '<h3 style="font-weight:700;margin-bottom:10px;font-size:14px;"><i class="fas fa-tasks" style="color:#00d4ff;margin-right:6px;"></i>Progress & Waktu</h3>';
   html += '<div id="progressHistoryContainer"></div>';
   html += '<p style="font-size:10px;color:#6b7280;text-align:center;margin-top:8px;"><i class="fas fa-lock" style="margin-right:4px;"></i>Hanya admin/teknisi yang dapat mengedit progress</p>';
   html += '</div>';
 
-  // Timeline
   html += '<div class="glass" style="border-radius:16px;padding:16px;margin-bottom:12px;">';
   html += '<h3 style="font-weight:700;margin-bottom:12px;font-size:14px;"><i class="fas fa-route" style="color:#00d4ff;margin-right:6px;"></i>Tracking Tiket</h3>';
   html += '<div class="timeline-wrap">';
@@ -1519,7 +1558,7 @@ function loadTicketDetail(id) {
   setTimeout(function() { renderProgressHistory(id); }, 100);
 }
 
-/* ═══════ RENDER PROGRESS HISTORY (READ-ONLY) ═══════ */
+/* ═══════ RENDER PROGRESS HISTORY (READ-ONLY untuk customer) ═══════ */
 function renderProgressHistory(ticketId) {
   var container = $('progressHistoryContainer');
   if (!container) return;
@@ -1538,22 +1577,48 @@ function renderProgressHistory(ticketId) {
     container.innerHTML = arr.map(function(p) {
       var now = Date.now();
       var remaining = (p.deadline || 0) - now;
-      var isConfirmed = !!p.confirmed;
+      var isDone = p.status === 'Selesai';
+      var isConfirmed = !!p.confirmed || isDone;
       var isExpired = !isConfirmed && remaining <= 0;
       var cardClass = isConfirmed ? 'confirmed' : (isExpired ? 'expired' : '');
       var countdownClass = isConfirmed ? 'countdown-confirmed' : (isExpired ? 'countdown-expired' : 'countdown-running');
-      var countdownText = isConfirmed ? '✅ Selesai ' + fmtTime(p.confirmedAt) : (isExpired ? '⏰ Waktu Habis' : '⏱️ ' + formatCountdown(remaining));
+      var countdownText;
+      if (isDone) countdownText = '✅ Selesai ' + fmtTime(p.confirmedAt || p.at);
+      else if (isConfirmed) countdownText = '✅ Dikonfirmasi ' + fmtTime(p.confirmedAt);
+      else if (isExpired) countdownText = '⏰ Waktu Habis';
+      else countdownText = '⏱️ ' + formatCountdown(remaining);
       var editedTag = p.edited ? '<span style="font-size:9px;color:#fbbf24;margin-left:4px;">(diedit)</span>' : '';
+
+      // Seekbar untuk progress (hanya jika tidak done)
+      var seekbarHtml = '';
+      if (!isDone) {
+        var startAt = p.at || 0;
+        var endAt = p.deadline || 0;
+        var pct = 0;
+        if (endAt > startAt) pct = Math.max(0, Math.min(100, Math.round(((now - startAt) / (endAt - startAt)) * 100)));
+        var seekCls = pct >= 100 ? 'neon-seekbar-danger' : '';
+        seekbarHtml = '<div style="margin-top:8px;">' +
+          '<div class="neon-seekbar ' + seekCls + '">' +
+          '<div class="neon-seekbar-fill" data-seek-start="' + startAt + '" data-seek-end="' + endAt + '" data-seek-done="false" style="width:' + pct + '%;"></div>' +
+          '</div>' +
+          '<div class="neon-seekbar-label">' +
+          '<span class="seek-left">' + fmtTime(startAt) + '</span>' +
+          '<span class="seek-pct">' + pct + '%</span>' +
+          '<span class="seek-right">' + (endAt ? fmtTime(endAt) : '-') + '</span>' +
+          '</div>' +
+          '</div>';
+      }
+
       return '<div class="progress-card ' + cardClass + '">' +
         '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;">' +
         '<div style="flex:1;min-width:0;">' +
         '<p style="font-weight:700;font-size:12px;color:#fff;">' + escapeHtml(p.status || '-') + editedTag + '</p>' +
         '<p style="font-size:10px;color:#6b7280;margin-top:2px;"><i class="fas fa-user"></i> ' + escapeHtml(p.updatedByName || '-') + ' · ' + fmtDate(p.at) + '</p>' +
         '</div>' +
-        '<span class="countdown-badge ' + countdownClass + '" data-deadline="' + (p.deadline || 0) + '" data-confirmed="' + isConfirmed + '">' + countdownText + '</span>' +
+        '<span class="countdown-badge ' + countdownClass + '" ' + (isDone || isConfirmed ? '' : 'data-deadline="' + (p.deadline || 0) + '" data-confirmed="false"') + '>' + countdownText + '</span>' +
         '</div>' +
         (p.note ? '<p style="font-size:11px;color:#d1d5db;margin-top:4px;line-height:1.4;">' + escapeHtml(p.note) + '</p>' : '') +
-        '<p style="font-size:10px;color:#6b7280;margin-top:4px;">⏱️ Estimasi: ' + (p.durationMinutes || 0) + ' menit</p>' +
+        seekbarHtml +
         '</div>';
     }).join('');
     startCountdownTicker();
@@ -1574,7 +1639,20 @@ function startCountdownTicker() {
         el.className = 'countdown-badge countdown-expired';
       } else {
         el.textContent = '⏱️ ' + formatCountdown(remaining);
-        el.className = 'countdown-badge countdown-active';
+        el.className = 'countdown-badge countdown-running';
+      }
+    });
+    document.querySelectorAll('.neon-seekbar-fill[data-seek-start]').forEach(function(el) {
+      var startAt = parseInt(el.dataset.seekStart);
+      var endAt = parseInt(el.dataset.seekEnd);
+      var done = el.dataset.seekDone === 'true';
+      if (done) return;
+      if (endAt > startAt) {
+        var pct = Math.max(0, Math.min(100, Math.round(((now - startAt) / (endAt - startAt)) * 100)));
+        el.style.width = pct + '%';
+        var parent = el.closest('.neon-seekbar').parentElement;
+        var pctLabel = parent ? parent.querySelector('.seek-pct') : null;
+        if (pctLabel) pctLabel.textContent = pct + '%';
       }
     });
   }, 1000);
@@ -1606,65 +1684,34 @@ async function submitRating() {
   if (!selectedRating) return toast('Pilih bintang dulu', 'error');
   var ui = $('ulasanInput');
   var ulasan = ui ? ui.value.trim() : '';
-
   try {
     var t = ticketsCache[selectedTicketId];
     if (!t) return toast('Tiket tidak ditemukan', 'error');
     if (t.rating > 0) return toast('Sudah diberi rating', 'warn');
-
     var now = Date.now();
-
-    // 1. Simpan rating di tiket
     await db.ref('tickets/' + selectedTicketId).update({
-      rating: selectedRating,
-      ulasan: ulasan,
-      ratedAt: now,
-      updatedAt: now
+      rating: selectedRating, ulasan: ulasan, ratedAt: now, updatedAt: now
     });
-
-    // 2. Update stats teknisi
     if (t.teknisiUid) {
       var snap = await db.ref('users/' + t.teknisiUid + '/ratingStats').once('value');
       var stats = snap.val() || { total: 0, count: 0 };
       var nt = stats.total + selectedRating;
       var nc = stats.count + 1;
-      await db.ref('users/' + t.teknisiUid + '/ratingStats').set({
-        total: nt,
-        count: nc,
-        avg: +(nt / nc).toFixed(2)
-      });
-
-      // 3. ✅ Kirim pesan ke chat tiket (notif ke teknisi)
+      await db.ref('users/' + t.teknisiUid + '/ratingStats').set({ total: nt, count: nc, avg: +(nt / nc).toFixed(2) });
       var starText = '★'.repeat(selectedRating) + '☆'.repeat(5 - selectedRating);
-      var chatMsg = '⭐ Anda menerima rating ' + selectedRating + '/5 ' + starText +
-        (ulasan ? '\n📝 ' + ulasan : '') +
-        '\n\nTerima kasih!';
+      var chatMsg = '⭐ Anda menerima rating ' + selectedRating + '/5 ' + starText + (ulasan ? '\n📝 ' + ulasan : '') + '\n\nTerima kasih!';
       await db.ref('chats/' + selectedTicketId).push({
-        senderId: 'SYSTEM',
-        senderName: 'System',
-        senderRole: 'system',
-        message: chatMsg,
-        timestamp: now,
-        isRating: true,
-        ratingValue: selectedRating,
-        ratingTo: t.teknisiUid
+        senderId: 'SYSTEM', senderName: 'System', senderRole: 'system',
+        message: chatMsg, timestamp: now, isRating: true, ratingValue: selectedRating, ratingTo: t.teknisiUid
       });
-
-      // 4. ✅ Update metadata di user teknisi (last rating info)
       await db.ref('users/' + t.teknisiUid).update({
-        lastRating: selectedRating,
-        lastRatingAt: now,
-        lastRatingFrom: t.customerName || currentUid,
-        lastRatingTicket: selectedTicketId
+        lastRating: selectedRating, lastRatingAt: now,
+        lastRatingFrom: t.customerName || currentUid, lastRatingTicket: selectedTicketId
       });
-
-      // 5. Update nama di log
-      log('Rating sent to teknisi ' + t.teknisiUid + ' = ' + selectedRating + ' bintang');
       toast('Terima kasih! Rating terkirim ke ' + (t.teknisiName || 'teknisi'), 'success');
     } else {
       toast('Terima kasih atas ulasan Anda!', 'success');
     }
-
     closeRating();
   } catch (err) {
     logErr('submitRating error', err);
@@ -1672,29 +1719,13 @@ async function submitRating() {
   }
 }
 
-/* ═══════ CHAT ═══════ */
-function renderChatList() {
-  try {
-    var listEl = $('chatListSidebar');
-    if (!listEl) return;
-    // Customer cuma pakai tampilan chat per tiket, tidak butuh list
-  } catch (err) {}
-}
-
-/* ═══════════════════════════════════════════════
-   CHAT ROOM SYSTEM
-═══════════════════════════════════════════════ */
-var currentChatRoom = null;
-var currentChatType = 'support'; // 'support' atau 'ticket'
-
+/* ═══════ CHAT ROOM SYSTEM ═══════ */
 function getSupportRoomId() {
   return 'support_' + currentUid;
 }
 
 function buildRoomList() {
   var rooms = [];
-
-  // Room support (selalu ada)
   var supportLast = chatLastMessages[getSupportRoomId()];
   rooms.push({
     id: getSupportRoomId(),
@@ -1705,23 +1736,15 @@ function buildRoomList() {
     lastTs: supportLast ? supportLast.ts : 0,
     status: 'aktif'
   });
-
-  // Room per tiket
   allTickets.forEach(function(t) {
     var last = chatLastMessages[t.id];
     var title = '#' + safeSub(t.id, 1, 6).toUpperCase() + ' · ' + (t.kategori || 'Tiket');
     var subtitle = t.teknisiName ? 'Teknisi: ' + t.teknisiName : (t.status === 'Terkirim' ? 'Menunggu admin' : t.status);
     rooms.push({
-      id: t.id,
-      type: 'ticket',
-      title: title,
-      subtitle: subtitle,
-      lastMsg: last ? last.msg : '',
-      lastTs: last ? last.ts : (t.updatedAt || 0),
-      status: t.status
+      id: t.id, type: 'ticket', title: title, subtitle: subtitle,
+      lastMsg: last ? last.msg : '', lastTs: last ? last.ts : (t.updatedAt || 0), status: t.status
     });
   });
-
   return rooms;
 }
 
@@ -1748,20 +1771,14 @@ function switchChatRoom(roomId) {
   delete unreadChatByTicket[roomId];
   updateChatBadges();
 
-  // Update header
   var titleEl = $('chatTicketTitle');
   var infoEl = $('chatTicketInfo');
   var avEl = $('chatRoomAvatar');
   if (titleEl) titleEl.textContent = room.title;
   if (infoEl) infoEl.textContent = room.subtitle;
-  if (avEl) {
-    avEl.innerHTML = room.type === 'support' ? '<i class="fas fa-headset"></i>' : '<i class="fas fa-ticket-alt"></i>';
-  }
+  if (avEl) avEl.innerHTML = room.type === 'support' ? '<i class="fas fa-headset"></i>' : '<i class="fas fa-ticket-alt"></i>';
 
-  // Load messages
   loadChatMessagesForRoom(roomId);
-
-  // Save preference
   try { localStorage.setItem('lks_customer_lastRoom', roomId); } catch (e) {}
 }
 
@@ -1777,12 +1794,9 @@ function loadChatMessagesForRoom(roomId) {
     if (last && last.timestamp) {
       try { localStorage.setItem('cust_read_' + roomId + '_' + last.timestamp, '1'); } catch (e) {}
     }
-    // Auto-create welcome message if empty support room
     if (msgs.length === 0 && roomId === getSupportRoomId()) {
       db.ref('chats/' + roomId).push({
-        senderId: 'SYSTEM',
-        senderName: 'Lakso Global',
-        senderRole: 'system',
+        senderId: 'SYSTEM', senderName: 'Lakso Global', senderRole: 'system',
         message: '👋 Selamat datang di Lakso Global Support.\n\nSilakan tulis pertanyaan atau keluhan Anda. Admin akan segera membalas.',
         timestamp: Date.now()
       });
@@ -1790,25 +1804,18 @@ function loadChatMessagesForRoom(roomId) {
   });
 }
 
-/* ═══════════════════════════════════════════════
-   RENDER CHAT MESSAGES — WAJIB ADA
-═══════════════════════════════════════════════ */
 function renderChatMessages(msgs) {
   var box = $('chatMessages');
   if (!box) return;
   var wasBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 100;
-
   if (!msgs || msgs.length === 0) {
     box.innerHTML = '<p style="text-align:center;color:#6b7280;font-size:13px;padding:32px 0;">Belum ada pesan. Mulai percakapan!</p>';
     return;
   }
-
   var html = '';
   msgs.forEach(function(m) {
     var isSystem = m.senderRole === 'system';
     var mine = m.senderId === currentUid || (m.senderRole === 'customer' && m.senderId === currentUid);
-
-    // Bubble untuk System (termasuk rating)
     if (isSystem) {
       var bubbleStyle = m.isRating
         ? 'background: linear-gradient(135deg, rgba(250, 204, 21, 0.15), rgba(251, 146, 60, 0.1)); border: 1px solid rgba(250, 204, 21, 0.4); color: #fde68a;'
@@ -1818,53 +1825,28 @@ function renderChatMessages(msgs) {
         escapeHtml(m.message || '') + '</div></div>';
       return;
     }
-
-    // Tentukan role, avatar, nama
-    var roleLabel = 'Customer';
-    var roleIcon = 'fa-user';
-    var avatarClass = 'customer';
-    var avatarText = 'C';
-    var displayName = m.senderName || 'Customer';
-
-    if (m.senderRole === 'admin') {
-      roleLabel = 'Admin';
-      roleIcon = 'fa-shield-halved';
-      avatarClass = 'admin';
-      avatarText = 'A';
-      displayName = 'Admin';
-    } else if (m.senderRole === 'teknisi') {
-      roleLabel = 'Teknisi';
-      roleIcon = 'fa-tools';
-      avatarClass = 'teknisi';
-      avatarText = 'T';
-      displayName = 'Teknisi - ' + (m.senderName || 'Unknown');
-    } else {
-      if (mine) {
-        roleLabel = 'Anda';
-        displayName = currentUserData && currentUserData.nama ? currentUserData.nama : 'Anda';
-      }
+    var roleLabel = 'Customer', roleIcon = 'fa-user', avatarClass = 'customer', avatarText = 'C', displayName = m.senderName || 'Customer';
+    if (m.senderRole === 'admin') { roleLabel = 'Admin'; roleIcon = 'fa-shield-halved'; avatarClass = 'admin'; avatarText = 'A'; displayName = 'Admin'; }
+    else if (m.senderRole === 'teknisi') { roleLabel = 'Teknisi'; roleIcon = 'fa-tools'; avatarClass = 'teknisi'; avatarText = 'T'; displayName = 'Teknisi - ' + (m.senderName || 'Unknown'); }
+    else {
+      if (mine) { roleLabel = 'Anda'; displayName = currentUserData && currentUserData.nama ? currentUserData.nama : 'Anda'; }
       avatarText = (displayName || 'C').charAt(0).toUpperCase();
     }
-
     var bubbleClass = mine ? 'mine' : 'other';
-
     html += '<div class="msg-wrapper' + (mine ? ' mine' : '') + '">' +
       '<div class="msg-avatar ' + avatarClass + '">' + escapeHtml(avatarText) + '</div>' +
       '<div class="msg-content">' +
-      '<div class="msg-sender-name ' + avatarClass + '">' +
-      '<i class="fas ' + roleIcon + '"></i>' + escapeHtml(displayName) +
+      '<div class="msg-sender-name ' + avatarClass + '"><i class="fas ' + roleIcon + '"></i>' + escapeHtml(displayName) +
       (!mine && m.senderRole !== 'admin' ? '<span class="msg-role-tag">' + roleLabel + '</span>' : '') +
       '</div>' +
       '<div class="msg-bubble ' + bubbleClass + '">' + escapeHtml(m.message || '') + '</div>' +
       '<div class="msg-time">' + fmtTime(m.timestamp) + '</div>' +
       '</div></div>';
   });
-
   box.innerHTML = html;
   if (wasBottom) box.scrollTop = box.scrollHeight;
 }
 
-// Ganti fungsi loadChat lama → panggil loadChatMessagesForRoom
 function loadChat(ticketId) {
   if (ticketId && ticketId !== getSupportRoomId()) {
     switchChatRoom(ticketId);
@@ -1873,36 +1855,19 @@ function loadChat(ticketId) {
   }
 }
 
-// Fungsi utama saat customer klik "Chat" di bottom nav / sidebar
 function openChatView() {
   showView('Chat');
-
-  // Bangun room list dulu (butuh chatLastMessages)
   populateChatRoomSelect();
-
-  // Tentukan room default
   var preferred = null;
   try { preferred = localStorage.getItem('lks_customer_lastRoom'); } catch (e) {}
-
-  // Prioritas 1: tiket aktif dengan teknisi
-  var activeWithTech = allTickets.filter(function(t) {
-    return t.status !== 'Selesai' && t.teknisiUid;
-  }).sort(function(a, b) { return (b.updatedAt || 0) - (a.updatedAt || 0); })[0];
-
+  var activeWithTech = allTickets.filter(function(t) { return t.status !== 'Selesai' && t.teknisiUid; }).sort(function(a, b) { return (b.updatedAt || 0) - (a.updatedAt || 0); })[0];
   var roomToOpen = null;
-
-  if (activeWithTech) {
-    roomToOpen = activeWithTech.id;
-  } else if (preferred && buildRoomList().some(function(r) { return r.id === preferred; })) {
-    roomToOpen = preferred;
-  } else {
-    roomToOpen = getSupportRoomId();
-  }
-
+  if (activeWithTech) roomToOpen = activeWithTech.id;
+  else if (preferred && buildRoomList().some(function(r) { return r.id === preferred; })) roomToOpen = preferred;
+  else roomToOpen = getSupportRoomId();
   setTimeout(function() { switchChatRoom(roomToOpen); }, 100);
 }
 
-// Update dropdown setiap chatLastMessages berubah
 function refreshChatRoomList() {
   if ($('viewChat') && $('viewChat').classList.contains('active')) {
     populateChatRoomSelect();
@@ -1915,13 +1880,11 @@ async function sendChat() {
   if (!msg) return;
   if (!currentChatRoom) { toast('Pilih room dulu', 'warn'); return; }
   if (msg.length > 500) return toast('Pesan terlalu panjang', 'warn');
-
   var now = Date.now();
   var lastSent = currentUserData.lastChatSent || 0;
   var diff = (now - lastSent) / 1000;
   if (diff < 10) { toast('Tunggu ' + Math.ceil(10 - diff) + ' detik', 'warn'); return; }
   input.value = '';
-
   try {
     await db.ref('chats/' + currentChatRoom).push({
       senderId: currentUid,
@@ -1937,6 +1900,93 @@ async function sendChat() {
   } catch (err) { toast('Gagal kirim: ' + err.message, 'error'); }
 }
 
+function startCooldownUI() {
+  var cd = $('chatCooldown'), sec = $('cooldownSec'), btn = $('sendChatBtn');
+  if (!cd) return;
+  cd.style.display = 'block';
+  if (btn) btn.disabled = true;
+  var remaining = 10;
+  if (sec) sec.textContent = remaining;
+  if (chatCooldownTimer) clearInterval(chatCooldownTimer);
+  chatCooldownTimer = setInterval(function() {
+    remaining--;
+    if (sec) sec.textContent = remaining;
+    if (remaining <= 0) { clearInterval(chatCooldownTimer); cd.style.display = 'none'; if (btn) btn.disabled = false; }
+  }, 1000);
+}
+
+/* ═══════ CHAT HISTORY MODAL ═══════ */
+function openChatHistory(e) {
+  if (e) e.stopPropagation();
+  var m = $('chatHistoryModal'); if (!m) return;
+  m.classList.add('show');
+  renderChatHistory();
+}
+function closeChatHistory() { var m = $('chatHistoryModal'); if (m) m.classList.remove('show'); }
+
+function renderChatHistory() {
+  try {
+    var list = $('chatHistoryList');
+    var count = $('chatHistoryCount');
+    if (!list) return;
+    var allTicketsForChat = allTickets.slice();
+    var supportId = getSupportRoomId();
+    var supportLast = chatLastMessages[supportId];
+    var allItems = [];
+    allItems.push({
+      id: supportId,
+      isSupport: true,
+      label: '💬 Chat Admin (Support)',
+      status: 'aktif',
+      kategori: 'Support',
+      lastMsg: supportLast ? supportLast.msg : '',
+      lastTs: supportLast ? supportLast.ts : 0,
+      lastRole: supportLast ? supportLast.role : '',
+      lastSenderName: supportLast ? supportLast.name : ''
+    });
+    allTicketsForChat.forEach(function(t) {
+      var lc = chatLastMessages[t.id] || {};
+      allItems.push({
+        id: t.id,
+        isSupport: false,
+        label: t.kategori || 'Tiket',
+        status: t.status,
+        kategori: t.kategori,
+        lastMsg: lc.msg || '',
+        lastTs: lc.ts || t.updatedAt || 0,
+        lastRole: lc.role || '',
+        lastSenderName: lc.name || ''
+      });
+    });
+    allItems.sort(function(a, b) { return (b.lastTs || 0) - (a.lastTs || 0); });
+    if (count) count.textContent = allItems.length + ' percakapan';
+
+    list.innerHTML = allItems.map(function(item) {
+      var statusColor = item.isSupport ? '#00d4ff' : (item.status === 'Selesai' ? '#34d399' : item.status === 'Pending' ? '#9ca3af' : '#00d4ff');
+      var preview = item.lastMsg || 'Belum ada pesan';
+      var senderLabel = '';
+      var icon = '';
+      if (item.lastRole === 'admin') { senderLabel = 'Admin'; icon = '🛡️'; }
+      else if (item.lastRole === 'teknisi') { senderLabel = 'Teknisi'; icon = '🔧'; }
+      else if (item.lastRole === 'customer') { senderLabel = 'Anda'; icon = '👤'; }
+      else if (item.lastRole === 'system') { senderLabel = 'Sistem'; icon = 'ℹ️'; }
+      var unread = unreadChatByTicket[item.id] || 0;
+      return '<div class="chat-history-item" onclick="closeChatHistory(); switchChatRoom(\'' + item.id + '\'); showView(\'Chat\');" style="border-left-color: ' + statusColor + ';">' +
+        '<div class="chat-history-avatar" style="background: linear-gradient(135deg, ' + statusColor + ', #7c3aed);"><i class="fas ' + (item.isSupport ? 'fa-headset' : 'fa-ticket-alt') + '"></i></div>' +
+        '<div style="flex: 1; min-width: 0;">' +
+        '<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px;">' +
+        '<p style="font-weight: 600; font-size: 13.5px; color: #e5e7eb;" class="line-clamp-1">' + escapeHtml(item.label) + '</p>' +
+        '<span style="font-size: 10px; color: #6b7280; white-space: nowrap;">' + (item.lastTs ? timeAgo(item.lastTs) : '-') + '</span></div>' +
+        '<div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">' +
+        '<span class="badge ' + (item.isSupport ? 'badge-blue' : statusBadgeClass(item.status)) + '" style="font-size: 9px; padding: 1px 6px;">' + (item.isSupport ? 'Support' : item.status) + '</span></div>' +
+        '<div class="chat-history-preview">' + (icon ? icon + ' ' : '') + (senderLabel ? '<b>' + senderLabel + ':</b> ' : '') + '<span>' + escapeHtml(preview) + '</span></div>' +
+        '</div>' +
+        (unread > 0 ? '<span style="background: #ef4444; color: #fff; font-size: 11px; font-weight: 700; border-radius: 999px; min-width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; padding: 0 6px;">' + unread + '</span>' : '') +
+        '</div>';
+    }).join('');
+  } catch (err) { logErr('renderChatHistory error', err); }
+}
+
 /* ═══════ NOTIF FILTER + READ TRACKER ═══════ */
 function setNotifFilter(mode) {
   notifFilter = mode;
@@ -1950,7 +2000,6 @@ function setNotifFilter(mode) {
 function getNotifLastReadAt() {
   try { return parseInt(localStorage.getItem('lks_notif_lastReadAt') || '0', 10); } catch (e) { return 0; }
 }
-
 function markAllNotifsRead() {
   try { localStorage.setItem('lks_notif_lastReadAt', String(Date.now())); } catch (e) {}
 }
@@ -1959,19 +2008,13 @@ function toggleNotif(e) {
   if (e) e.stopPropagation();
   var p = $('notifPanel'); if (!p) return;
   if (p.classList.contains('show')) p.classList.remove('show');
-  else {
-    markAllNotifsRead();
-    p.classList.add('show');
-    renderNotif();
-  }
+  else { markAllNotifsRead(); p.classList.add('show'); renderNotif(); }
 }
 
 function renderNotif() {
   try {
     var lastRead = getNotifLastReadAt();
     var allNotifs = [];
-
-    // 1. PEMBERITAHUAN
     allTickets.forEach(function(t) {
       if (t.isEmergency && t.status !== 'Selesai') {
         allNotifs.push({ id: t.id, category: 'info', title: '🚨 SOS EMERGENCY', body: (t.customerName || '-') + ' - ' + (t.alamat || '-'), time: t.createdAt || Date.now(), color: '#ef4444', icon: 'fa-exclamation-circle' });
@@ -1982,41 +2025,31 @@ function renderNotif() {
         if (t.eta) bodyTxt += ' • ETA: ' + t.eta;
         allNotifs.push({ id: t.id, category: 'info', title: '📋 ' + t.kategori, body: bodyTxt, time: t.updatedAt, color: '#00d4ff', icon: 'fa-info-circle' });
       }
-    });
-
-    // 2. PROGRESS
-    allTickets.forEach(function(t) {
       var ph = t.progressHistory;
-      if (!ph) return;
-      Object.keys(ph).forEach(function(k) {
-        var p = ph[k] || {};
-        if (!p.at) return;
-        allNotifs.push({
-          id: t.id, category: 'progress',
-          title: '📋 ' + (p.status || 'Progress') + ' — ' + (t.kategori || '-'),
-          body: (p.note ? p.note : 'Estimasi: ' + (p.durationMinutes || 0) + ' menit') + ' · oleh ' + (p.updatedByName || '-'),
-          time: p.at, color: '#c084fc', icon: 'fa-tasks'
+      if (ph) {
+        Object.keys(ph).forEach(function(k) {
+          var p = ph[k] || {};
+          if (!p.at) return;
+          allNotifs.push({
+            id: t.id, category: 'progress',
+            title: '📋 ' + (p.status || 'Progress') + ' — ' + (t.kategori || '-'),
+            body: (p.note ? p.note : 'Estimasi: ' + (p.durationMinutes || 0) + ' menit') + ' · oleh ' + (p.updatedByName || '-'),
+            time: p.at, color: '#c084fc', icon: 'fa-tasks'
+          });
         });
-      });
-    });
-
-    // 3. TEKNISI / SIBUK
-    allTickets.forEach(function(t) {
+      }
       if ((t.status === 'Teknisi OTW' || t.status === 'Dalam Pengerjaan' || t.status === 'Ditugaskan') && t.teknisiName) {
         allNotifs.push({
           id: t.id, category: 'busy',
           title: '🔧 Teknisi Menangani Tiket',
           body: (t.teknisiName || '-') + ' sedang menangani: ' + (t.kategori || '-'),
-          time: t.updatedAt || Date.now(),
-          color: '#f59e0b', icon: 'fa-tools'
+          time: t.updatedAt || Date.now(), color: '#f59e0b', icon: 'fa-tools'
         });
       }
     });
-
     var filtered = allNotifs;
     if (notifFilter !== 'all') filtered = allNotifs.filter(function(n) { return n.category === notifFilter; });
     filtered.sort(function(a, b) { return b.time - a.time; });
-
     var unread = filtered.filter(function(n) { return n.time > lastRead; }).length;
     var badge = $('notifBadge');
     if (badge) {
@@ -2028,7 +2061,6 @@ function renderNotif() {
 
     var listEl = $('notifList');
     if (!listEl) return;
-
     if (filtered.length === 0) {
       var emptyMsg = 'Belum Ada Pemberitahuan';
       if (notifFilter === 'progress') emptyMsg = 'Belum Ada Update Progress';
@@ -2040,7 +2072,6 @@ function renderNotif() {
         '</div>';
       return;
     }
-
     listEl.innerHTML = filtered.map(function(n) {
       var isRead = n.time <= lastRead;
       return '<div class="glass fade-in" onclick="handleNotifClick(\'' + n.id + '\')" ' +
@@ -2139,6 +2170,70 @@ function showView(name, ticketId) {
   window.scrollTo(0, 0);
 }
 
+/* ═══════ MAINTENANCE POPUP ═══════ */
+function startMaintenancePopupListener() {
+  if (window._maintPopupStarted) return;
+  window._maintPopupStarted = true;
+  db.ref('maintenance').on('value', function(snap) {
+    var now = Date.now();
+    var active = null;
+    snap.forEach(function(c) {
+      var v = c.val() || {};
+      if (!v.id) v.id = c.key;
+      if (v.active !== false && now >= v.startAt && now < v.endAt) {
+        if (!active || v.startAt > active.startAt) active = v;
+      }
+    });
+    maintData = active;
+    updateMaintPopup();
+  });
+}
+
+function updateMaintPopup() {
+  var popup = $('maintenancePopup');
+  if (!popup) return;
+  if (!maintData) {
+    popup.classList.remove('show');
+    if (maintTicker) { clearInterval(maintTicker); maintTicker = null; }
+    return;
+  }
+  var m = maintData;
+  var colors = {
+    info: { c: '#00d4ff', grad: 'linear-gradient(135deg, #00d4ff, #0091ff)', icon: 'fa-info-circle' },
+    warning: { c: '#f59e0b', grad: 'linear-gradient(135deg, #f59e0b, #d97706)', icon: 'fa-exclamation-triangle' },
+    danger: { c: '#ef4444', grad: 'linear-gradient(135deg, #ef4444, #dc2626)', icon: 'fa-exclamation-circle' },
+    critical: { c: '#dc2626', grad: 'linear-gradient(135deg, #dc2626, #991b1b)', icon: 'fa-biohazard' }
+  };
+  var c = colors[m.status] || colors.warning;
+  var box = $('maintBox'); if (box) box.style.borderColor = c.c;
+  var icon = $('maintIcon'); if (icon) { icon.style.background = c.grad; icon.innerHTML = '<i class="fas ' + c.icon + '"></i>'; }
+  var titleEl = $('maintTitleText'); if (titleEl) { titleEl.textContent = m.title || 'Maintenance'; titleEl.style.color = c.c; }
+  var descEl = $('maintDescText'); if (descEl) descEl.textContent = m.description || '';
+  var startEl = $('maintTimeStart'); if (startEl) startEl.textContent = fmtDate(m.startAt);
+  var endEl = $('maintTimeEnd'); if (endEl) endEl.textContent = fmtDate(m.endAt);
+  popup.classList.add('show');
+  updateMaintSeekbar();
+  if (maintTicker) clearInterval(maintTicker);
+  maintTicker = setInterval(updateMaintSeekbar, 1000);
+}
+
+function updateMaintSeekbar() {
+  if (!maintData) return;
+  var now = Date.now();
+  var m = maintData;
+  var total = m.endAt - m.startAt;
+  var elapsed = now - m.startAt;
+  var pct = Math.max(0, Math.min(100, Math.round((elapsed / total) * 100)));
+  var fill = $('maintSeekFill'); if (fill) fill.style.width = pct + '%';
+  var pctEl = $('maintPctText'); if (pctEl) pctEl.textContent = pct + '%';
+  if (now >= m.endAt) {
+    var popup = $('maintenancePopup');
+    if (popup) popup.classList.remove('show');
+    if (maintTicker) { clearInterval(maintTicker); maintTicker = null; }
+    maintData = null;
+  }
+}
+
 /* ═══════ LOGOUT ═══════ */
 function openLogoutModal() { var m = $('logoutModal'); if (m) m.classList.add('show'); }
 function closeLogoutModal() { var m = $('logoutModal'); if (m) m.classList.remove('show'); }
@@ -2191,6 +2286,15 @@ function applyResponsive() {
   }
 }
 window.addEventListener('resize', applyResponsive);
+
+/* ═══════ KEYBOARD ═══════ */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    var lp = $('loginPage');
+    if (lp && lp.style.display !== 'none') { doLogin(); return; }
+    if (e.target && e.target.id === 'chatInput') { e.preventDefault(); sendChat(); }
+  }
+});
 
 /* ═══════ INIT ═══════ */
 if (document.readyState === 'loading') {

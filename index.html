@@ -654,6 +654,7 @@ var ticketsCache = {};
 var uploadedPhotos = [];
 var selectedTicketId = null;
 var selectedRating = 0;
+var selectedKategori = '';
 var lastTicketId = null;
 var userListener = null;
 var globalChatRef = null;
@@ -1332,7 +1333,8 @@ async function submitTicket() {
     resetTicketForm();
   }
 }
-function resetTicketForm() {
+if (isSystem) {
+      var bubbleStyle = m.isRating
   // Clear variables
   uploadedPhotos = [];
   selectedKategori = '';
@@ -1775,13 +1777,6 @@ function loadChatMessagesForRoom(roomId) {
     if (last && last.timestamp) {
       try { localStorage.setItem('cust_read_' + roomId + '_' + last.timestamp, '1'); } catch (e) {}
     }
-    if (isSystem) {
-      var bubbleStyle = m.isRating ? 'background: linear-gradient(135deg, rgba(250, 204, 21, 0.15), rgba(251, 146, 60, 0.1)); border: 1px solid rgba(250, 204, 21, 0.4); color: #fde68a;' : '';
-      html += '<div class="msg-system"><div class="msg-bubble" style="' + bubbleStyle + 'white-space:pre-line;">' +
-        '<i class="fas ' + (m.isRating ? 'fa-star' : 'fa-info-circle') + '" style="margin-right:4px;"></i>' +
-        escapeHtml(m.message) + '</div></div>';
-      return;
-    }
     // Auto-create welcome message if empty support room
     if (msgs.length === 0 && roomId === getSupportRoomId()) {
       db.ref('chats/' + roomId).push({
@@ -1793,6 +1788,80 @@ function loadChatMessagesForRoom(roomId) {
       });
     }
   });
+}
+
+/* ═══════════════════════════════════════════════
+   RENDER CHAT MESSAGES — WAJIB ADA
+═══════════════════════════════════════════════ */
+function renderChatMessages(msgs) {
+  var box = $('chatMessages');
+  if (!box) return;
+  var wasBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 100;
+
+  if (!msgs || msgs.length === 0) {
+    box.innerHTML = '<p style="text-align:center;color:#6b7280;font-size:13px;padding:32px 0;">Belum ada pesan. Mulai percakapan!</p>';
+    return;
+  }
+
+  var html = '';
+  msgs.forEach(function(m) {
+    var isSystem = m.senderRole === 'system';
+    var mine = m.senderId === currentUid || (m.senderRole === 'customer' && m.senderId === currentUid);
+
+    // Bubble untuk System (termasuk rating)
+    if (isSystem) {
+      var bubbleStyle = m.isRating
+        ? 'background: linear-gradient(135deg, rgba(250, 204, 21, 0.15), rgba(251, 146, 60, 0.1)); border: 1px solid rgba(250, 204, 21, 0.4); color: #fde68a;'
+        : '';
+      html += '<div class="msg-system"><div class="msg-bubble" style="' + bubbleStyle + 'white-space:pre-line;">' +
+        '<i class="fas ' + (m.isRating ? 'fa-star' : 'fa-info-circle') + '" style="margin-right:4px;"></i>' +
+        escapeHtml(m.message || '') + '</div></div>';
+      return;
+    }
+
+    // Tentukan role, avatar, nama
+    var roleLabel = 'Customer';
+    var roleIcon = 'fa-user';
+    var avatarClass = 'customer';
+    var avatarText = 'C';
+    var displayName = m.senderName || 'Customer';
+
+    if (m.senderRole === 'admin') {
+      roleLabel = 'Admin';
+      roleIcon = 'fa-shield-halved';
+      avatarClass = 'admin';
+      avatarText = 'A';
+      displayName = 'Admin';
+    } else if (m.senderRole === 'teknisi') {
+      roleLabel = 'Teknisi';
+      roleIcon = 'fa-tools';
+      avatarClass = 'teknisi';
+      avatarText = 'T';
+      displayName = 'Teknisi - ' + (m.senderName || 'Unknown');
+    } else {
+      if (mine) {
+        roleLabel = 'Anda';
+        displayName = currentUserData && currentUserData.nama ? currentUserData.nama : 'Anda';
+      }
+      avatarText = (displayName || 'C').charAt(0).toUpperCase();
+    }
+
+    var bubbleClass = mine ? 'mine' : 'other';
+
+    html += '<div class="msg-wrapper' + (mine ? ' mine' : '') + '">' +
+      '<div class="msg-avatar ' + avatarClass + '">' + escapeHtml(avatarText) + '</div>' +
+      '<div class="msg-content">' +
+      '<div class="msg-sender-name ' + avatarClass + '">' +
+      '<i class="fas ' + roleIcon + '"></i>' + escapeHtml(displayName) +
+      (!mine && m.senderRole !== 'admin' ? '<span class="msg-role-tag">' + roleLabel + '</span>' : '') +
+      '</div>' +
+      '<div class="msg-bubble ' + bubbleClass + '">' + escapeHtml(m.message || '') + '</div>' +
+      '<div class="msg-time">' + fmtTime(m.timestamp) + '</div>' +
+      '</div></div>';
+  });
+
+  box.innerHTML = html;
+  if (wasBottom) box.scrollTop = box.scrollHeight;
 }
 
 // Ganti fungsi loadChat lama → panggil loadChatMessagesForRoom

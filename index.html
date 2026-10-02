@@ -1327,22 +1327,22 @@ async function submitTicket() {
   } catch (err) {
     logErr('submitTicket error', err);
     toast('Gagal: ' + err.message, 'error');
-  } finally {
+    } finally {
     isSubmittingTicket = false;
-    // ✅ Reset total form (semua field, foto, kategori, dll)
     resetTicketForm();
   }
 }
-if (isSystem) {
-      var bubbleStyle = m.isRating
+
+/* ═══════ RESET TICKET FORM ═══════ */
+function resetTicketForm() {
   // Clear variables
   uploadedPhotos = [];
   selectedKategori = '';
   isSubmittingTicket = false;
 
-  // Clear DOM
-  var gi = $('kategoriGrid');
-  if (gi) {
+    // Clear DOM
+    var gi = $('kategoriGrid');
+    if (gi) {
     Array.from(gi.querySelectorAll('.kategori-card')).forEach(function(c) { c.classList.remove('selected'); });
   }
   var td = $('ticketDesc'); if (td) td.value = '';

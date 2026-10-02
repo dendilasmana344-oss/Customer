@@ -279,7 +279,7 @@
         <button onclick="showView('NewTicket')" class="sidebar-item" data-sidebar="NewTicket" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; color: #9ca3af; font-size: 14px; text-align: left; width: 100%;">
           <i class="fas fa-plus-circle" style="width: 20px;"></i><span>Buat Tiket</span>
         </button>
-        <button onclick="showView('Chat')" class="sidebar-item" data-sidebar="Chat" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; color: #9ca3af; font-size: 14px; position: relative; text-align: left; width: 100%;">
+        <button onclick="openChatView()" class="sidebar-item" data-sidebar="Chat" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; color: #9ca3af; font-size: 14px; position: relative; text-align: left; width: 100%;">
           <i class="fas fa-comments" style="width: 20px;"></i><span>Chat</span>
           <span id="sidebarChatBadge" style="display: none; margin-left: auto; background: #ef4444; color: #fff; font-size: 11px; border-radius: 999px; min-width: 20px; height: 20px; padding: 0 6px; align-items: center; justify-content: center; font-weight: 700;">0</span>
         </button>
@@ -414,17 +414,22 @@
           <i class="fas fa-arrow-left"></i>Kembali
         </button>
         <div class="glass" style="border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; height: calc(100vh - 200px); min-height: 400px;">
-          <div style="padding: 12px 14px; border-bottom: 1px solid #1f2937; display: flex; align-items: center; gap: 12px;">
-            <div style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #00d4ff, #7c3aed); display: flex; align-items: center; justify-content: center; color: #fff;">
-              <i class="fas fa-comments"></i>
+          <div style="padding: 12px 14px; border-bottom: 1px solid #1f2937;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+              <div id="chatRoomAvatar" style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #00d4ff, #7c3aed); display: flex; align-items: center; justify-content: center; color: #fff;">
+                <i class="fas fa-headset"></i>
+              </div>
+              <div style="flex: 1; min-width: 0;">
+                <p id="chatTicketTitle" style="font-weight: 600; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Chat Admin</p>
+                <p id="chatTicketInfo" style="font-size: 10px; color: #6b7280; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Support 24/7</p>
+              </div>
+              <span style="display: flex; align-items: center; gap: 4px; font-size: 10px; color: #34d399;">
+                <span style="width: 6px; height: 6px; border-radius: 50%; background: #34d399;"></span>Online
+              </span>
             </div>
-            <div style="flex: 1; min-width: 0;">
-              <p id="chatTicketTitle" style="font-weight: 600; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Live Chat</p>
-              <p id="chatTicketInfo" style="font-size: 10px; color: #6b7280; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></p>
-            </div>
-            <span style="display: flex; align-items: center; gap: 4px; font-size: 10px; color: #34d399;">
-              <span style="width: 6px; height: 6px; border-radius: 50%; background: #34d399;"></span>Online
-            </span>
+            <select id="chatRoomSelect" onchange="switchChatRoom(this.value)" style="width: 100%; background: #0a0e1a; border: 1px solid #1f2937; border-radius: 8px; padding: 8px 12px; color: #e5e7eb; outline: none; font-size: 12px; box-sizing: border-box;">
+              <option value="">-- Pilih Room --</option>
+            </select>
           </div>
           <div id="chatMessages" style="flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px;"></div>
           <div style="padding: 10px; border-top: 1px solid #1f2937;">
@@ -496,7 +501,7 @@
       <button onclick="openNewTicket()" class="bottom-nav-item" data-nav="NewTicket" style="padding: 10px; display: flex; flex-direction: column; align-items: center; gap: 2px; color: #9ca3af;">
         <i class="fas fa-plus-circle" style="font-size: 16px;"></i><span style="font-size: 10px;">Buat</span>
       </button>
-      <button onclick="showView('Chat')" class="bottom-nav-item" data-nav="Chat" style="position: relative; padding: 10px; display: flex; flex-direction: column; align-items: center; gap: 2px; color: #9ca3af;">
+       <button onclick="openChatView()" class="bottom-nav-item" data-nav="Chat" style="position: relative; padding: 10px; display: flex; flex-direction: column; align-items: center; gap: 2px; color: #9ca3af;">
         <i class="fas fa-comments" style="font-size: 16px;"></i><span style="font-size: 10px;">Chat</span>
         <span id="chatBadge" style="display: none; position: absolute; top: 4px; right: 25%; min-width: 18px; height: 18px; background: #ef4444; color: #fff; border-radius: 999px; font-size: 10px; font-weight: 700; align-items: center; justify-content: center; padding: 0 4px;">0</span>
       </button>
@@ -953,6 +958,7 @@ function startGlobalChatIndex() {
       });
       chatLastMessages = next;
       updateChatBadges();
+      refreshChatRoomList();
       renderChatList();
       var hm = $('chatHistoryModal');
       if (hm && hm.classList.contains('show')) renderChatHistory();
@@ -1063,12 +1069,15 @@ function renderTickets(tickets) {
 
 /* ═══════ NEW TICKET ═══════ */
 function openNewTicket() {
+  // Cek limit tiket aktif
   var active = allTickets.filter(function(t) { return t.status !== 'Selesai'; });
   if (active.length >= MAX_ACTIVE_TICKETS) {
     toast('Max 5 tiket aktif', 'warn');
     showSuccessModal('Batas Tiket Tercapai', 'Anda sudah memiliki ' + active.length + ' tiket aktif.\nTunggu sampai ada yang selesai.');
     return;
   }
+
+  // Cek profil lengkap
   var u = currentUserData;
   var isComplete = u && u.nama && u.nama.length >= 3 && u.noWa && /^\+62\d{8,12}$/.test(u.noWa) && u.alamat && u.alamat.length >= 5 && u.paket && u.koordinat && u.koordinat.indexOf(',') >= 0;
   if (!isComplete) {
@@ -1080,19 +1089,19 @@ function openNewTicket() {
     var m = $('profileReqModal'); if (m) m.classList.add('show');
     return;
   }
-  showView('NewTicket');
-  uploadedPhotos = [];
-  selectedKategori = '';
-  var pp = $('photoPreview'); if (pp) pp.innerHTML = '';
-  var gi = $('kategoriGrid');
-  if (gi) {
-    Array.from(gi.querySelectorAll('.kategori-card')).forEach(function(c) { c.classList.remove('selected'); });
-  }
-  var td = $('ticketDesc'); if (td) td.value = '';
-  var dc = $('descCount'); if (dc) dc.textContent = '0';
-}
 
-var selectedKategori = '';
+  // ✅ Reset form dulu
+  resetTicketForm();
+
+  // Pindah ke view
+  showView('NewTicket');
+
+  // Fokus ke kategori (opsional)
+  setTimeout(function() {
+    var grid = $('kategoriGrid');
+    if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 200);
+}
 
 function reqGetLocation() {
   var status = $('reqLocStatus'), input = $('reqKoordinat');
@@ -1310,16 +1319,40 @@ async function submitTicket() {
     });
     showSuccessModal('Tiket Dikirim!', 'Nomor: #' + safeSub(ref.key, 1, 8).toUpperCase() + '\n\nTeknisi akan segera menghubungi.');
     toast('Tiket berhasil dikirim!', 'success');
-    uploadedPhotos = [];
     lastTicketId = ref.key;
+    // Reset form & pindah ke dashboard
+    resetTicketForm();
     showView('Dashboard');
   } catch (err) {
     logErr('submitTicket error', err);
     toast('Gagal: ' + err.message, 'error');
   } finally {
     isSubmittingTicket = false;
+    // ✅ Reset total form (semua field, foto, kategori, dll)
+    resetTicketForm();
+  }
+}
+function resetTicketForm() {
+  // Clear variables
+  uploadedPhotos = [];
+  selectedKategori = '';
+  isSubmittingTicket = false;
+
+  // Clear DOM
+  var gi = $('kategoriGrid');
+  if (gi) {
+    Array.from(gi.querySelectorAll('.kategori-card')).forEach(function(c) { c.classList.remove('selected'); });
+  }
+  var td = $('ticketDesc'); if (td) td.value = '';
+  var dc = $('descCount'); if (dc) dc.textContent = '0';
+  var pp = $('photoPreview'); if (pp) pp.innerHTML = '';
+  var pi = $('photoInput'); if (pi) pi.value = '';
+  var tp = $('ticketPriority'); if (tp) tp.value = 'Medium';
+  var btn = $('submitTicket');
+  if (btn) {
     btn.disabled = false;
     btn.innerHTML = '<i class="fas fa-paper-plane" style="margin-right: 8px;"></i>Kirim Tiket';
+    btn.style.opacity = '1';
   }
 }
 
@@ -1474,6 +1507,9 @@ function loadTicketDetail(id) {
     for (var i = 1; i <= 5; i++) html += '<i class="fas fa-star" style="color:' + (i <= t.rating ? '#facc15' : '#4b5563') + ';"></i>';
     html += '</div>';
     html += '<p style="font-size:12px;color:#d1d5db;">' + escapeHtml(t.ulasan || 'Tanpa komentar') + '</p>';
+    if (t.teknisiName) {
+      html += '<p style="font-size:11px;color:#34d399;margin-top:6px;"><i class="fas fa-check-circle" style="margin-right:4px;"></i>Terkirim ke teknisi: <b>' + escapeHtml(t.teknisiName) + '</b></p>';
+    }
     html += '</div>';
   }
 
@@ -1568,20 +1604,70 @@ async function submitRating() {
   if (!selectedRating) return toast('Pilih bintang dulu', 'error');
   var ui = $('ulasanInput');
   var ulasan = ui ? ui.value.trim() : '';
+
   try {
     var t = ticketsCache[selectedTicketId];
     if (!t) return toast('Tiket tidak ditemukan', 'error');
     if (t.rating > 0) return toast('Sudah diberi rating', 'warn');
-    await db.ref('tickets/' + selectedTicketId).update({ rating: selectedRating, ulasan: ulasan, ratedAt: Date.now(), updatedAt: Date.now() });
+
+    var now = Date.now();
+
+    // 1. Simpan rating di tiket
+    await db.ref('tickets/' + selectedTicketId).update({
+      rating: selectedRating,
+      ulasan: ulasan,
+      ratedAt: now,
+      updatedAt: now
+    });
+
+    // 2. Update stats teknisi
     if (t.teknisiUid) {
       var snap = await db.ref('users/' + t.teknisiUid + '/ratingStats').once('value');
       var stats = snap.val() || { total: 0, count: 0 };
-      var nt = stats.total + selectedRating, nc = stats.count + 1;
-      await db.ref('users/' + t.teknisiUid + '/ratingStats').set({ total: nt, count: nc, avg: +(nt / nc).toFixed(2) });
+      var nt = stats.total + selectedRating;
+      var nc = stats.count + 1;
+      await db.ref('users/' + t.teknisiUid + '/ratingStats').set({
+        total: nt,
+        count: nc,
+        avg: +(nt / nc).toFixed(2)
+      });
+
+      // 3. ✅ Kirim pesan ke chat tiket (notif ke teknisi)
+      var starText = '★'.repeat(selectedRating) + '☆'.repeat(5 - selectedRating);
+      var chatMsg = '⭐ Anda menerima rating ' + selectedRating + '/5 ' + starText +
+        (ulasan ? '\n📝 ' + ulasan : '') +
+        '\n\nTerima kasih!';
+      await db.ref('chats/' + selectedTicketId).push({
+        senderId: 'SYSTEM',
+        senderName: 'System',
+        senderRole: 'system',
+        message: chatMsg,
+        timestamp: now,
+        isRating: true,
+        ratingValue: selectedRating,
+        ratingTo: t.teknisiUid
+      });
+
+      // 4. ✅ Update metadata di user teknisi (last rating info)
+      await db.ref('users/' + t.teknisiUid).update({
+        lastRating: selectedRating,
+        lastRatingAt: now,
+        lastRatingFrom: t.customerName || currentUid,
+        lastRatingTicket: selectedTicketId
+      });
+
+      // 5. Update nama di log
+      log('Rating sent to teknisi ' + t.teknisiUid + ' = ' + selectedRating + ' bintang');
+      toast('Terima kasih! Rating terkirim ke ' + (t.teknisiName || 'teknisi'), 'success');
+    } else {
+      toast('Terima kasih atas ulasan Anda!', 'success');
     }
-    toast('Terima kasih!', 'success');
+
     closeRating();
-  } catch (err) { toast('Gagal: ' + err.message, 'error'); }
+  } catch (err) {
+    logErr('submitRating error', err);
+    toast('Gagal: ' + err.message, 'error');
+  }
 }
 
 /* ═══════ CHAT ═══════ */
@@ -1593,161 +1679,193 @@ function renderChatList() {
   } catch (err) {}
 }
 
-function loadChat(ticketId) {
-  lastTicketId = ticketId;
-  delete unreadChatByTicket[ticketId];
-  updateChatBadges();
-  var t = ticketsCache[ticketId];
-  var ct = $('chatTicketTitle'); if (ct) ct.textContent = t ? t.kategori : 'Live Chat';
-  var ci = $('chatTicketInfo'); if (ci) ci.textContent = t ? '#' + safeSub(t.id, 1, 8).toUpperCase() + ' • ' + t.status + (t.teknisiName ? ' • Teknisi: ' + t.teknisiName : '') : '';
-  var box = $('chatMessages');
-  if (box) {
-    box.innerHTML = '<p style="text-align:center;color:#6b7280;font-size:13px;padding:32px 0;"><i class="fas fa-spinner fa-spin"></i> Memuat...</p>';
-    db.ref('chats/' + ticketId).orderByChild('timestamp').once('value', function(snap) {
-      var msgs = [];
-      snap.forEach(function(c) { msgs.push(c.val()); });
-      renderChatMessages(msgs);
-      var last = msgs[msgs.length - 1];
-      if (last && last.timestamp) localStorage.setItem('cust_read_' + ticketId + '_' + last.timestamp, '1');
-    });
-  }
-  checkChatCooldown();
+/* ═══════════════════════════════════════════════
+   CHAT ROOM SYSTEM
+═══════════════════════════════════════════════ */
+var currentChatRoom = null;
+var currentChatType = 'support'; // 'support' atau 'ticket'
+
+function getSupportRoomId() {
+  return 'support_' + currentUid;
 }
 
-function renderChatMessages(msgs) {
-  var box = $('chatMessages'); if (!box) return;
-  var wasBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 100;
-  if (msgs.length === 0) {
-    box.innerHTML = '<p style="text-align:center;color:#6b7280;font-size:13px;padding:32px 0;">Belum ada pesan.</p>';
-    return;
-  }
+function buildRoomList() {
+  var rooms = [];
+
+  // Room support (selalu ada)
+  var supportLast = chatLastMessages[getSupportRoomId()];
+  rooms.push({
+    id: getSupportRoomId(),
+    type: 'support',
+    title: '💬 Chat Admin (Support)',
+    subtitle: 'Tanya apa saja ke Admin',
+    lastMsg: supportLast ? supportLast.msg : '',
+    lastTs: supportLast ? supportLast.ts : 0,
+    status: 'aktif'
+  });
+
+  // Room per tiket
+  allTickets.forEach(function(t) {
+    var last = chatLastMessages[t.id];
+    var title = '#' + safeSub(t.id, 1, 6).toUpperCase() + ' · ' + (t.kategori || 'Tiket');
+    var subtitle = t.teknisiName ? 'Teknisi: ' + t.teknisiName : (t.status === 'Terkirim' ? 'Menunggu admin' : t.status);
+    rooms.push({
+      id: t.id,
+      type: 'ticket',
+      title: title,
+      subtitle: subtitle,
+      lastMsg: last ? last.msg : '',
+      lastTs: last ? last.ts : (t.updatedAt || 0),
+      status: t.status
+    });
+  });
+
+  return rooms;
+}
+
+function populateChatRoomSelect() {
+  var sel = $('chatRoomSelect');
+  if (!sel) return;
+  var rooms = buildRoomList();
   var html = '';
-  msgs.forEach(function(m) {
-    var isSystem = m.senderRole === 'system';
-    var mine = m.senderId === currentUid || (m.senderRole === 'customer' && m.senderId === currentUid);
+  rooms.forEach(function(r) {
+    var selected = currentChatRoom === r.id ? ' selected' : '';
+    var icon = r.type === 'support' ? '💬' : '🎫';
+    html += '<option value="' + r.id + '"' + selected + '>' + icon + ' ' + escapeHtml(r.title.replace(/^#[A-Z0-9]+ · /, '')) + '</option>';
+  });
+  sel.innerHTML = html;
+}
+
+function switchChatRoom(roomId) {
+  if (!roomId) return;
+  currentChatRoom = roomId;
+  var room = buildRoomList().find(function(r) { return r.id === roomId; });
+  if (!room) return;
+  currentChatType = room.type;
+  lastTicketId = room.type === 'ticket' ? room.id : null;
+  delete unreadChatByTicket[roomId];
+  updateChatBadges();
+
+  // Update header
+  var titleEl = $('chatTicketTitle');
+  var infoEl = $('chatTicketInfo');
+  var avEl = $('chatRoomAvatar');
+  if (titleEl) titleEl.textContent = room.title;
+  if (infoEl) infoEl.textContent = room.subtitle;
+  if (avEl) {
+    avEl.innerHTML = room.type === 'support' ? '<i class="fas fa-headset"></i>' : '<i class="fas fa-ticket-alt"></i>';
+  }
+
+  // Load messages
+  loadChatMessagesForRoom(roomId);
+
+  // Save preference
+  try { localStorage.setItem('lks_customer_lastRoom', roomId); } catch (e) {}
+}
+
+function loadChatMessagesForRoom(roomId) {
+  var box = $('chatMessages');
+  if (!box) return;
+  box.innerHTML = '<p style="text-align:center;color:#6b7280;font-size:13px;padding:32px 0;"><i class="fas fa-spinner fa-spin"></i> Memuat...</p>';
+  db.ref('chats/' + roomId).orderByChild('timestamp').once('value', function(snap) {
+    var msgs = [];
+    snap.forEach(function(c) { msgs.push(c.val()); });
+    renderChatMessages(msgs);
+    var last = msgs[msgs.length - 1];
+    if (last && last.timestamp) {
+      try { localStorage.setItem('cust_read_' + roomId + '_' + last.timestamp, '1'); } catch (e) {}
+    }
     if (isSystem) {
-      html += '<div class="msg-system"><div class="msg-bubble"><i class="fas fa-info-circle" style="margin-right:4px;"></i>' + escapeHtml(m.message) + '</div></div>';
+      var bubbleStyle = m.isRating ? 'background: linear-gradient(135deg, rgba(250, 204, 21, 0.15), rgba(251, 146, 60, 0.1)); border: 1px solid rgba(250, 204, 21, 0.4); color: #fde68a;' : '';
+      html += '<div class="msg-system"><div class="msg-bubble" style="' + bubbleStyle + 'white-space:pre-line;">' +
+        '<i class="fas ' + (m.isRating ? 'fa-star' : 'fa-info-circle') + '" style="margin-right:4px;"></i>' +
+        escapeHtml(m.message) + '</div></div>';
       return;
     }
-    var roleLabel = 'Customer', roleIcon = 'fa-user', avatarClass = 'customer', avatarText = 'C', displayName = m.senderName || 'Customer';
-    if (m.senderRole === 'admin') { roleLabel = 'Admin'; roleIcon = 'fa-shield-halved'; avatarClass = 'admin'; avatarText = 'A'; displayName = 'Admin'; }
-    else if (m.senderRole === 'teknisi') { roleLabel = 'Teknisi'; roleIcon = 'fa-tools'; avatarClass = 'teknisi'; avatarText = 'T'; displayName = 'Teknisi - ' + (m.senderName || 'Unknown'); }
-    else { roleLabel = 'Anda'; displayName = m.senderName || 'Anda'; avatarClass = 'customer'; avatarText = (m.senderName || 'C').charAt(0).toUpperCase(); if (mine) displayName = currentUserData.nama || 'Anda'; }
-    var bubbleClass = mine ? 'mine' : 'other';
-    html += '<div class="msg-wrapper' + (mine ? ' mine' : '') + '">' +
-      '<div class="msg-avatar ' + avatarClass + '">' + escapeHtml(avatarText) + '</div>' +
-      '<div class="msg-content">' +
-      '<div class="msg-sender-name ' + avatarClass + '"><i class="fas ' + roleIcon + '"></i>' + escapeHtml(displayName) +
-      (!mine && m.senderRole !== 'admin' ? '<span class="msg-role-tag">' + roleLabel + '</span>' : '') +
-      '</div>' +
-      '<div class="msg-bubble ' + bubbleClass + '">' + escapeHtml(m.message || '') + '</div>' +
-      '<div class="msg-time">' + fmtTime(m.timestamp) + '</div>' +
-      '</div></div>';
+    // Auto-create welcome message if empty support room
+    if (msgs.length === 0 && roomId === getSupportRoomId()) {
+      db.ref('chats/' + roomId).push({
+        senderId: 'SYSTEM',
+        senderName: 'Lakso Global',
+        senderRole: 'system',
+        message: '👋 Selamat datang di Lakso Global Support.\n\nSilakan tulis pertanyaan atau keluhan Anda. Admin akan segera membalas.',
+        timestamp: Date.now()
+      });
+    }
   });
-  box.innerHTML = html;
-  if (wasBottom) box.scrollTop = box.scrollHeight;
+}
+
+// Ganti fungsi loadChat lama → panggil loadChatMessagesForRoom
+function loadChat(ticketId) {
+  if (ticketId && ticketId !== getSupportRoomId()) {
+    switchChatRoom(ticketId);
+  } else {
+    openChatView();
+  }
+}
+
+// Fungsi utama saat customer klik "Chat" di bottom nav / sidebar
+function openChatView() {
+  showView('Chat');
+
+  // Bangun room list dulu (butuh chatLastMessages)
+  populateChatRoomSelect();
+
+  // Tentukan room default
+  var preferred = null;
+  try { preferred = localStorage.getItem('lks_customer_lastRoom'); } catch (e) {}
+
+  // Prioritas 1: tiket aktif dengan teknisi
+  var activeWithTech = allTickets.filter(function(t) {
+    return t.status !== 'Selesai' && t.teknisiUid;
+  }).sort(function(a, b) { return (b.updatedAt || 0) - (a.updatedAt || 0); })[0];
+
+  var roomToOpen = null;
+
+  if (activeWithTech) {
+    roomToOpen = activeWithTech.id;
+  } else if (preferred && buildRoomList().some(function(r) { return r.id === preferred; })) {
+    roomToOpen = preferred;
+  } else {
+    roomToOpen = getSupportRoomId();
+  }
+
+  setTimeout(function() { switchChatRoom(roomToOpen); }, 100);
+}
+
+// Update dropdown setiap chatLastMessages berubah
+function refreshChatRoomList() {
+  if ($('viewChat') && $('viewChat').classList.contains('active')) {
+    populateChatRoomSelect();
+  }
 }
 
 async function sendChat() {
   var input = $('chatInput'); if (!input) return;
   var msg = input.value.trim();
-  if (!msg || !lastTicketId) return;
+  if (!msg) return;
+  if (!currentChatRoom) { toast('Pilih room dulu', 'warn'); return; }
   if (msg.length > 500) return toast('Pesan terlalu panjang', 'warn');
+
   var now = Date.now();
   var lastSent = currentUserData.lastChatSent || 0;
   var diff = (now - lastSent) / 1000;
   if (diff < 10) { toast('Tunggu ' + Math.ceil(10 - diff) + ' detik', 'warn'); return; }
   input.value = '';
+
   try {
-    await db.ref('chats/' + lastTicketId).push({
+    await db.ref('chats/' + currentChatRoom).push({
       senderId: currentUid,
       senderName: currentUserData.nama || currentUid,
       senderRole: 'customer',
       message: msg,
-      timestamp: now
+      timestamp: now,
+      isSupport: currentChatType === 'support'
     });
     await db.ref('users/' + currentUid + '/lastChatSent').set(now);
     currentUserData.lastChatSent = now;
     startCooldownUI();
   } catch (err) { toast('Gagal kirim: ' + err.message, 'error'); }
-}
-
-function startCooldownUI() {
-  var cd = $('chatCooldown'), sec = $('cooldownSec'), btn = $('sendChatBtn');
-  if (!cd) return;
-  cd.style.display = 'block';
-  if (btn) btn.disabled = true;
-  var remaining = 10;
-  if (sec) sec.textContent = remaining;
-  if (chatCooldownTimer) clearInterval(chatCooldownTimer);
-  chatCooldownTimer = setInterval(function() {
-    remaining--;
-    if (sec) sec.textContent = remaining;
-    if (remaining <= 0) { clearInterval(chatCooldownTimer); cd.style.display = 'none'; if (btn) btn.disabled = false; }
-  }, 1000);
-}
-function checkChatCooldown() {
-  var now = Date.now();
-  var lastSent = currentUserData.lastChatSent || 0;
-  if ((now - lastSent) / 1000 < 10) startCooldownUI();
-}
-
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Enter' && e.target && e.target.id === 'chatInput') { e.preventDefault(); sendChat(); }
-  if (e.key === 'Enter' && $('loginPage') && $('loginPage').style.display !== 'none') { doLogin(); }
-});
-
-/* ═══════ CHAT HISTORY MODAL ═══════ */
-function openChatHistory(e) {
-  if (e) e.stopPropagation();
-  var m = $('chatHistoryModal'); if (!m) return;
-  m.classList.add('show');
-  renderChatHistory();
-}
-function closeChatHistory() { var m = $('chatHistoryModal'); if (m) m.classList.remove('show'); }
-
-function renderChatHistory() {
-  var list = $('chatHistoryList');
-  var count = $('chatHistoryCount');
-  if (!list) return;
-  if (allTickets.length === 0) {
-    list.innerHTML = '<div style="text-align:center;padding:40px 20px;"><i class="fas fa-comment-slash" style="font-size:40px;color:#374151;"></i><p style="color:#9ca3af;margin-top:12px;font-size:14px;font-weight:600;">Belum Ada Percakapan</p><p style="color:#6b7280;margin-top:6px;font-size:12px;">Buat tiket dulu untuk memulai chat</p></div>';
-    if (count) count.textContent = '0 percakapan';
-    return;
-  }
-  if (count) count.textContent = allTickets.length + ' percakapan';
-  var sorted = allTickets.slice().sort(function(a, b) {
-    var aL = chatLastMessages[a.id] || { ts: a.updatedAt || 0 };
-    var bL = chatLastMessages[b.id] || { ts: b.updatedAt || 0 };
-    return (bL.ts || 0) - (aL.ts || 0);
-  });
-  list.innerHTML = sorted.map(function(t) {
-    var lc = chatLastMessages[t.id] || {};
-    var unread = unreadChatByTicket[t.id] || 0;
-    var statusColor = t.status === 'Selesai' ? '#34d399' : t.status === 'Pending' ? '#9ca3af' : '#00d4ff';
-    var preview = 'Belum ada pesan', senderLabel = '', icon = '';
-    if (lc.msg && lc.role) {
-      if (lc.role === 'admin') { icon = '<i class="fas fa-shield-halved" style="color: #c084fc;"></i>'; senderLabel = '<span style="color: #c084fc; font-weight: 700;">Admin</span>'; }
-      else if (lc.role === 'teknisi') { icon = '<i class="fas fa-tools" style="color: #34d399;"></i>'; senderLabel = '<span style="color: #34d399; font-weight: 700;">Teknisi</span>'; }
-      else if (lc.role === 'customer') { icon = '<i class="fas fa-user" style="color: #00d4ff;"></i>'; senderLabel = '<span style="color: #00d4ff; font-weight: 700;">Anda</span>'; }
-      else if (lc.role === 'system') { icon = '<i class="fas fa-info-circle" style="color: #facc15;"></i>'; senderLabel = '<span style="color: #facc15; font-weight: 700;">Sistem</span>'; }
-      preview = lc.msg;
-    }
-    var timeText = lc.ts ? timeAgo(lc.ts) : timeAgo(t.updatedAt);
-    return '<div class="chat-history-item" onclick="closeChatHistory(); showView(\'Chat\',\'' + t.id + '\')" style="border-left-color: ' + statusColor + ';">' +
-      '<div class="chat-history-avatar" style="background: linear-gradient(135deg, ' + statusColor + ', #7c3aed);"><i class="fas fa-ticket-alt"></i></div>' +
-      '<div style="flex: 1; min-width: 0;">' +
-      '<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px;">' +
-      '<p style="font-weight: 600; font-size: 13.5px; color: #e5e7eb;" class="line-clamp-1">' + escapeHtml(t.kategori) + '</p>' +
-      '<span style="font-size: 10px; color: #6b7280; white-space: nowrap;">' + timeText + '</span></div>' +
-      '<div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">' +
-      '<span class="badge ' + statusBadgeClass(t.status) + '" style="font-size: 9px; padding: 1px 6px;">' + t.status + '</span>' +
-      '<span style="font-family: ui-monospace, monospace; font-size: 10px; color: #6b7280;">#' + safeSub(t.id, 1, 6).toUpperCase() + '</span></div>' +
-      '<div class="chat-history-preview">' + (icon ? icon + ' ' : '') + (senderLabel ? senderLabel + ': ' : '') + '<span style="color: #9ca3af;">' + escapeHtml(preview) + '</span></div>' +
-      '</div>' +
-      (unread > 0 ? '<span style="background: #ef4444; color: #fff; font-size: 11px; font-weight: 700; border-radius: 999px; min-width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; padding: 0 6px;">' + unread + '</span>' : '') +
-      '</div>';
-  }).join('');
 }
 
 /* ═══════ NOTIF FILTER + READ TRACKER ═══════ */
